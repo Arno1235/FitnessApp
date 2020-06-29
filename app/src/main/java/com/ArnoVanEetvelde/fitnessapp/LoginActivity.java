@@ -85,7 +85,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void gotToMain(FirebaseUser currentUser){
         if (currentUser != null) {
-            Toast.makeText(getApplicationContext(), currentUser.getEmail(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
     }
 
