@@ -10,74 +10,45 @@ import android.widget.Toast;
 
 public class OnSwipeTouchListener implements OnTouchListener {
 
-    private final GestureDetector gestureDetector;
+    private int prevX, prevY, startX, velocityTreshold = 5, swipeTreshold = 300;
+    private boolean allowSwipe = false, first = true;
 
     public OnSwipeTouchListener (Context ctx){
-        gestureDetector = new GestureDetector(ctx, new GestureListener());
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
-    }
 
-    private final class GestureListener extends SimpleOnGestureListener {
+        int x = (int) event.getRawX();
+        int y = (int) event.getRawY();
 
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            boolean result = false;
-            try {
-                float diffY = e2.getY() - e1.getY();
-                float diffX = e2.getX() - e1.getX();
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffX > 0) {
-                            if (e1.getX() < 25){
-                                onSwipeExtremeRight();
-                            } else {
-                                onSwipeRight();
-                            }
-                        } else {
-                            onSwipeLeft();
-                        }
-                        result = true;
-                    }
-                }
-                else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffY > 0) {
-                        onSwipeBottom();
-                    } else {
-                        onSwipeTop();
-                    }
-                    result = true;
-                }
-            } catch (Exception exception) {
-                exception.printStackTrace();
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            startX = x;
+            prevX = x;
+            prevY = y;
+            allowSwipe = false;
+            first = true;
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE){
+            if (allowSwipe){
+                moving(x - prevX);
+            } else if (Math.abs(prevX - x) > velocityTreshold && Math.abs(prevX - x) > Math.abs(prevY - y) && first){
+                allowSwipe = true;
             }
-            return result;
+            first = false;
+        } else if (event.getAction() == MotionEvent.ACTION_UP && allowSwipe){
+            if (Math.abs(x - startX) > swipeTreshold){
+                confirm(x - startX);
+            } else {
+                cancel(x - startX);
+            }
         }
+        return true;
     }
 
-    public void onSwipeRight() {
+    public void moving(int x){
     }
-
-    public void onSwipeLeft() {
+    public void cancel(int loc){
     }
-
-    public void onSwipeTop() {
-    }
-
-    public void onSwipeBottom() {
-    }
-
-    public void onSwipeExtremeRight() {
+    public void confirm(int loc){
     }
 }
