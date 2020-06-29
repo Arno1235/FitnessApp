@@ -1,19 +1,13 @@
 package com.ArnoVanEetvelde.fitnessapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,12 +30,15 @@ public class MainActivity extends AppCompatActivity {
         heightScreen = displayMetrics.heightPixels;
         widthScreen = displayMetrics.widthPixels;
 
+        ImageView appBar = (ImageView) findViewById(R.id.appBar);
+        appBar.getLayoutParams().height = (int) widthScreen*40/180;
+
         pageL1.setTranslationX(-widthScreen);
         pageR1.setTranslationX(widthScreen);
 
         currentScreen = 0;
 
-        ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        ImageView imageView = (ImageView) findViewById(R.id.swipeDetection);
         imageView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
             public void moving(int x){
                 if (currentScreen == -1){
