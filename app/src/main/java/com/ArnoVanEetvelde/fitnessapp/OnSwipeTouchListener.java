@@ -6,6 +6,7 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Toast;
 
 public class OnSwipeTouchListener implements OnTouchListener {
 
@@ -77,7 +78,6 @@ public class OnSwipeTouchListener implements OnTouchListener {
     public void onSwipeBottom() {
     }
 
-    public void onSwipeExtremeRight(){
-
+    public void onSwipeExtremeRight() {
     }
 }

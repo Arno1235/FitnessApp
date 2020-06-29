@@ -17,7 +17,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private LinearLayout page1, page2;
+    private LinearLayout page1, page2, page3;
+    private int currentScreen, numberOfScreens = 3;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         page1 = (LinearLayout) findViewById(R.id.page1);
         page2 = (LinearLayout) findViewById(R.id.page2);
+        page3 = (LinearLayout) findViewById(R.id.page3);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -34,9 +36,11 @@ public class MainActivity extends AppCompatActivity {
         float width = displayMetrics.widthPixels;
 
         page2.setTranslationX(-width);
+        page3.setTranslationX(+width);
+
+        currentScreen = 0;
 
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-
         imageView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
             public void onSwipeTop() {
                 Toast.makeText(getApplicationContext(), "top", Toast.LENGTH_SHORT).show();
@@ -61,41 +65,63 @@ public class MainActivity extends AppCompatActivity {
 
     public void moveRight(){
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        float height = displayMetrics.heightPixels;
-        float width = displayMetrics.widthPixels;
+        if (currentScreen > -(numberOfScreens-1)/2) {
 
-        ValueAnimator anim = ValueAnimator.ofFloat(0f, width);
-        anim.setDuration(3000);
-        anim.start();
+            currentScreen--;
 
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Float value = (Float) animation.getAnimatedValue();
-                page1.setTranslationX(value);
-                page2.setTranslationX(value-width);
-            }
-        });
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            float height = displayMetrics.heightPixels;
+            float width = displayMetrics.widthPixels;
+
+            ValueAnimator anim = ValueAnimator.ofFloat(0f, width);
+            anim.setDuration(1000);
+            anim.start();
+
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    if(currentScreen == 0) {
+                        page3.setTranslationX(value);
+                        page1.setTranslationX(value - width);
+                    } else if (currentScreen == -1){
+                        page1.setTranslationX(value);
+                        page2.setTranslationX(value - width);
+                    }
+                }
+            });
+
+        }
     }
 
     public void moveLeft(){
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        float height = displayMetrics.heightPixels;
-        float width = displayMetrics.widthPixels;
+        if (currentScreen < +(numberOfScreens-1)/2) {
 
-        ValueAnimator anim = ValueAnimator.ofFloat(width, 0f);
-        anim.setDuration(3000);
-        anim.start();
+            currentScreen ++;
 
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Float value = (Float) animation.getAnimatedValue();
-                page1.setTranslationX(value);
-                page2.setTranslationX(value-width);
-            }
-        });
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            float height = displayMetrics.heightPixels;
+            float width = displayMetrics.widthPixels;
+
+            ValueAnimator anim = ValueAnimator.ofFloat(0f, width);
+            anim.setDuration(1000);
+            anim.start();
+
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    if(currentScreen == 0) {
+                        page2.setTranslationX(-value);
+                        page1.setTranslationX(width - value);
+                    } else if (currentScreen == 1){
+                        page1.setTranslationX(-value);
+                        page3.setTranslationX(width - value);
+                    }
+                }
+            });
+
+        }
     }
 }
