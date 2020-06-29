@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //googleLogin();
+                googleLogin();
             }
         });
 
@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void googleLogin(View caller){
+    public void googleLogin(){
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -213,8 +213,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public void addUser(FirebaseUser userFirebase){
 
-        Toast.makeText(getApplicationContext(), "add user", Toast.LENGTH_SHORT).show();
-
         Map<String, Object> user = new HashMap<>();
         user.put("email", userFirebase.getEmail().toString());
         user.put("username", textUsername.getText().toString());
@@ -234,6 +232,8 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Error adding document" + e, Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        gotToMain(mAuth.getCurrentUser());
     }
 
     public void deleteDB(String doc){
@@ -253,7 +253,30 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    public void removeUser(View caller){
+        db.collection("User")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Toast.makeText(getApplicationContext(), document.getId() + " => " + document.getData(), Toast.LENGTH_SHORT).show();
+                                deleteDB(document.getId());
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error getting documents." + task.getException(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
     public void logout(View caller){
         mAuth.signOut();
+    }
+
+    public void forgotPassword(View caller){
+        String email = textEmail.getText().toString();
+        mAuth.sendPasswordResetEmail(email);
     }
 }
