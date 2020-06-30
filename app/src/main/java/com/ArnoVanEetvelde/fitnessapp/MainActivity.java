@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         selector = findViewById(R.id.selector);
         textUser = (TextView) findViewById(R.id.textUser);
 
-        listWorkoutHome = (RecyclerView) findViewById(R.id.list);
+        listWorkoutHome = (RecyclerView) findViewById(R.id.listWorkoutHome);
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         listWorkoutHome.setLayoutManager(layoutManager);
 
