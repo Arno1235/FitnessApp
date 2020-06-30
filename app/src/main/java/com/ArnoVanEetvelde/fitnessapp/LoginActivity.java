@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText textEmail, textPassword, textUsername;
     private Button butConfirm, butSwitch;
     private boolean boolLoging;
+    private HashMap<String, Object> userDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +81,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         textUsername.setVisibility(View.GONE);
         boolLoging = true;
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        gotToMain(currentUser);
+        if (mAuth.getCurrentUser() != null) {
+            getUser();
+        }
     }
 
-    public void gotToMain(FirebaseUser currentUser){
-        if (currentUser != null) {
+    public void goToMain(){
+        if (mAuth.getCurrentUser() != null && userDB != null) {
             Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("user", userDB);
             startActivity(intent);
         }
     }
@@ -139,9 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            gotToMain(user);
+                            getUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -183,12 +185,32 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            gotToMain(user);
+                            goToMain();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "signInWithCredential:failure" + task.getException(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void getUser() {
+        db.collection("User")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                userDB = new HashMap<>();
+                                userDB.put("email", document.get("email"));
+                                userDB.put("username", document.get("username"));
+                                userDB.put("goal", document.get("goal"));
+                                goToMain();
+                                break;
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error getting documents." + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -234,7 +256,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
-        gotToMain(mAuth.getCurrentUser());
+        goToMain();
     }
 
     public void deleteDB(String doc){

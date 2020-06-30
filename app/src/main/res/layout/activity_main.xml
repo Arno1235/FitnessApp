@@ -18,6 +18,21 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
+        android:id="@+id/pageR1"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button3" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/pageL1"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
@@ -41,26 +56,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/button7"
+        <TextView
+            android:id="@+id/textTimeOfDay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button1" />
-    </LinearLayout>
+            android:gravity="right"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:text="Good Afternoon"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/pageR1"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/button8"
+        <TextView
+            android:id="@+id/textUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button3" />
+            android:gravity="right"
+            android:paddingTop="0dp"
+            android:paddingRight="16dp"
+            android:text="user"
+            android:textSize="24sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="32dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listWorkoutHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
     <ImageView
@@ -73,13 +98,42 @@
         app:srcCompat="@drawable/appbar" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/progressIcon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
+        android:onClick="butProgress"
         app:layout_constraintBottom_toBottomOf="@+id/swipeDetection"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/homeIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/chart_icon" />
+
+    <ImageView
+        android:id="@+id/homeIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:onClick="butHome"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/home_icon" />
+
+    <ImageView
+        android:id="@+id/workoutIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:onClick="butWorkout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/homeIcon"
+        app:srcCompat="@drawable/workout_icon" />
+
+    <View
+        android:id="@+id/selector"
+        android:layout_width="40dp"
+        android:layout_height="3dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/appBar"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
