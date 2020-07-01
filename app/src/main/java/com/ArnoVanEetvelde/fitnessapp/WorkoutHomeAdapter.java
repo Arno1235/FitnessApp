@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,6 +47,7 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
 
         // Set the data to the views here
         holder.setWorkoutName((String)workout.get("name"));
+        holder.setWorkoutImage((String)workout.get("image"));
 
         // You can set click listners to indvidual items in the viewholder here
         // make sure you pass down the listner or make the Data members of the viewHolder public
@@ -56,15 +58,20 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
     public class WorkoutHolder extends RecyclerView.ViewHolder {
 
         private TextView textName;
+        private ImageView thumbnail;
 
         public WorkoutHolder(View itemView) {
             super(itemView);
 
             textName = itemView.findViewById(R.id.textName);
+            thumbnail = itemView.findViewById(R.id.thumbnail);
         }
 
         public void setWorkoutName(String name) {
             textName.setText(name);
+        }
+        public void setWorkoutImage(String image){
+            thumbnail.setImageResource();
         }
     }
 }

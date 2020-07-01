@@ -81,8 +81,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         textUsername.setVisibility(View.GONE);
         boolLoging = true;
-        if (mAuth.getCurrentUser() != null) {
-            getUser();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            getUser(user.getEmail().toString());
         }
     }
 
@@ -126,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            addUser(user);
+                            addUser(user.getEmail());
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -143,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            getUser();
+                            getUser(mAuth.getCurrentUser().getEmail().toString());
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -185,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            goToMain();
+                            addUserIfNotExisting();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "signInWithCredential:failure" + task.getException(), Toast.LENGTH_SHORT).show();
@@ -194,8 +195,9 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void getUser() {
+    public void getUser(String emailAddress) {
         db.collection("User")
+                .whereEqualTo("email", emailAddress)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -216,16 +218,26 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void getDB(View caller) {
+    public void addUserIfNotExisting(){
+        String emailAddress = mAuth.getCurrentUser().getEmail().toString();
         db.collection("User")
+                .whereEqualTo("email", emailAddress)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Toast.makeText(getApplicationContext(), document.getId() + " => " + document.getData(), Toast.LENGTH_SHORT).show();
-                                //deleteDB(document.getId());
+                            if (task.getResult().size() == 0){
+                                addUser(mAuth.getCurrentUser().getEmail());
+                            } else {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    userDB = new HashMap<>();
+                                    userDB.put("email", document.get("email"));
+                                    userDB.put("username", document.get("username"));
+                                    userDB.put("goal", document.get("goal"));
+                                    goToMain();
+                                    break;
+                                }
                             }
                         } else {
                             Toast.makeText(getApplicationContext(), "Error getting documents." + task.getException(), Toast.LENGTH_SHORT).show();
@@ -234,10 +246,10 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void addUser(FirebaseUser userFirebase){
+    public void addUser(String emailAddress){
 
         Map<String, Object> user = new HashMap<>();
-        user.put("email", userFirebase.getEmail().toString());
+        user.put("email", emailAddress);
         user.put("username", textUsername.getText().toString());
         user.put("goal", 0);
 
@@ -246,7 +258,8 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(getApplicationContext(), "DocumentSnapshot added with ID: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "DocumentSnapshot added with ID: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
+                        getUser(emailAddress);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -255,8 +268,15 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Error adding document" + e, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
 
-        goToMain();
+    public void logout(View caller){
+        mAuth.signOut();
+    }
+
+    public void forgotPassword(View caller){
+        String email = textEmail.getText().toString();
+        mAuth.sendPasswordResetEmail(email);
     }
 
     public void deleteDB(String doc){
@@ -294,12 +314,22 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void logout(View caller){
-        mAuth.signOut();
+    public void getDB(View caller) {
+        db.collection("User")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Toast.makeText(getApplicationContext(), document.getId() + " => " + document.getData(), Toast.LENGTH_SHORT).show();
+                                //deleteDB(document.getId());
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error getting documents." + task.getException(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
-    public void forgotPassword(View caller){
-        String email = textEmail.getText().toString();
-        mAuth.sendPasswordResetEmail(email);
-    }
 }

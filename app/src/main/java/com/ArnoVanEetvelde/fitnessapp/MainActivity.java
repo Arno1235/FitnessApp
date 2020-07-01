@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         workoutsDB = new ArrayList<>();
         HashMap<String, Object> test = new HashMap<>();
         test.put("name", "beuh joh");
+        test.put("image", "0");
         workoutsDB.add(test);
         workoutsDB.add(test);
         workoutsDB.add(test);
