@@ -13,7 +13,9 @@
 <!--        android:type="linear" />-->
 
     <solid
-        android:color="#478bff" />
+        android:color="#ffffff" />
+<!--        android:color="#478bff" />-->
+
 
     <size
         android:width="180dp"

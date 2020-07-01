@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout page0, pageL1, pageR1;
     private int currentScreen, numberOfScreens = 3;
     private float widthScreen, heightScreen, animationVelocity = 2f;
-    private ImageView appBar, progressIcon, homeIcon, workoutIcon;
+    private ImageView appBar, progressIcon, homeIcon, workoutIcon, imageView;
     private View selector;
     private HashMap<String, Object> userDB;
     private ArrayList<HashMap<String, Object>> workoutsDB;
@@ -99,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
         updateUI();
 
-        ImageView imageView = (ImageView) findViewById(R.id.swipeDetection);
+        imageView = (ImageView) findViewById(R.id.swipeDetection);
+        imageView.getLayoutParams().width = (int) heightScreen;
         imageView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
             public void moving(int x){
                 if (currentScreen == -1){
