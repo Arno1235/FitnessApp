@@ -28,6 +28,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.XYMultipleSeriesRenderer;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -208,6 +214,20 @@ public class MainActivity extends AppCompatActivity {
         selector.setTranslationY(-(widthScreen*40/180 - widthScreen*40/360)/4);
         progressIcon.setTranslationX(widthScreen*40/1480);
         workoutIcon.setTranslationX(-widthScreen*40/1480);
+
+        XYSeries series = new XYSeries("Test");
+        series.add(0,0);
+        series.add(1,1);
+        series.add(2,2);
+        series.add(3,1);
+        series.add(4,0);
+        series.add(5,4);
+        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+        dataset.addSeries(series);
+        XYMultipleSeriesRenderer mRenderer = new ProgressChart().getChartView();
+        GraphicalView chartView = ChartFactory.getLineChartView(getApplicationContext(), dataset, mRenderer);
+        LinearLayout progressChartHome = (LinearLayout) findViewById(R.id.progressChartHome);
+        progressChartHome.addView(chartView);
 
     }
 
