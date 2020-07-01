@@ -215,20 +215,21 @@ public class MainActivity extends AppCompatActivity {
         progressIcon.setTranslationX(widthScreen*40/1480);
         workoutIcon.setTranslationX(-widthScreen*40/1480);
 
-        XYSeries series = new XYSeries("Test");
-        series.add(0,0);
-        series.add(1,1);
-        series.add(2,2);
-        series.add(3,1);
-        series.add(4,0);
-        series.add(5,4);
-        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-        dataset.addSeries(series);
-        XYMultipleSeriesRenderer mRenderer = new ProgressChart().getChartView();
+        ArrayList<Double> data = new ArrayList<>();
+        data.add(0.0);
+        data.add(1.0);
+        data.add(3.0);
+        data.add(2.0);
+        data.add(3.0);
+        data.add(4.0);
+        data.add(1.0);
+
+        ProgressChart progressChart = new ProgressChart(data, 0.05, 0.5);
+        XYMultipleSeriesRenderer mRenderer = progressChart.getChartView();
+        XYMultipleSeriesDataset dataset = progressChart.getDataSet();
         GraphicalView chartView = ChartFactory.getLineChartView(getApplicationContext(), dataset, mRenderer);
         LinearLayout progressChartHome = (LinearLayout) findViewById(R.id.progressChartHome);
         progressChartHome.addView(chartView);
-
     }
 
     public void movePrevious(int loc){
