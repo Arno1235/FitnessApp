@@ -1,6 +1,8 @@
 package com.ArnoVanEetvelde.fitnessapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +49,7 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
 
         // Set the data to the views here
         holder.setWorkoutName((String)workout.get("name"));
-        holder.setWorkoutImage((String)workout.get("image"));
+        holder.setWorkoutImage((int)workout.get("imagePath"));
 
         // You can set click listners to indvidual items in the viewholder here
         // make sure you pass down the listner or make the Data members of the viewHolder public
@@ -70,8 +72,8 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
         public void setWorkoutName(String name) {
             textName.setText(name);
         }
-        public void setWorkoutImage(String image){
-            thumbnail.setImageResource();
+        public void setWorkoutImage(int id){
+            thumbnail.setImageResource(id);
         }
     }
 }

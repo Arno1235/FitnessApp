@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -73,13 +74,14 @@ public class MainActivity extends AppCompatActivity {
         listWorkoutHome = (RecyclerView) findViewById(R.id.listWorkoutHome);
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         listWorkoutHome.setLayoutManager(layoutManager);
-
-
+        listWorkoutHome.addItemDecoration(new HorizontalSpaceItemDecoration(20));
 
         workoutsDB = new ArrayList<>();
         HashMap<String, Object> test = new HashMap<>();
-        test.put("name", "beuh joh");
-        test.put("image", "0");
+        test.put("name", "Run");
+        Context context = getApplicationContext();
+        int id = getResources().getIdentifier("pic00", "drawable", context.getPackageName());
+        test.put("imagePath", id);
         workoutsDB.add(test);
         workoutsDB.add(test);
         workoutsDB.add(test);
