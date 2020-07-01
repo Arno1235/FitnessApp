@@ -2,6 +2,7 @@ package com.ArnoVanEetvelde.fitnessapp;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,6 +11,8 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorSpace;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -33,16 +36,18 @@ import java.util.concurrent.TimeUnit;
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class MainActivity extends AppCompatActivity {
 
-    private LinearLayout page0, pageL1, pageR1;
+    private LinearLayout page0, pageL1, pageR1, settingsPage;
     private int currentScreen, numberOfScreens = 3;
     private float widthScreen, heightScreen, animationVelocity = 2f;
-    private ImageView appBar, progressIcon, homeIcon, workoutIcon, imageView;
+    private ImageView appBar, progressIcon, homeIcon, workoutIcon, imageView, butCancelSettings;
     private View selector;
     private HashMap<String, Object> userDB;
     private ArrayList<HashMap<String, Object>> workoutsDB;
     private TextView textUser;
     private RecyclerView listWorkoutHome;
     private WorkoutHomeAdapter listAdapter;
+    private CardView settingsPageCard, settingsBlur;
+    private OnSwipeTouchListener swipeListener;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -58,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         page0 = (LinearLayout) findViewById(R.id.page0);
         pageL1 = (LinearLayout) findViewById(R.id.pageL1);
         pageR1 = (LinearLayout) findViewById(R.id.pageR1);
+        settingsPage = (LinearLayout) findViewById(R.id.settingsPage);
+        settingsPageCard = (CardView) findViewById(R.id.settingsPageCard);
+        settingsBlur = (CardView) findViewById(R.id.settingsBlur);
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -70,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         workoutIcon = (ImageView) findViewById(R.id.workoutIcon);
         selector = findViewById(R.id.selector);
         textUser = (TextView) findViewById(R.id.textUser);
+        butCancelSettings = (ImageView) findViewById(R.id.butCancelSettings);
 
         listWorkoutHome = (RecyclerView) findViewById(R.id.listWorkoutHome);
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
@@ -80,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, Object> test = new HashMap<>();
         test.put("name", "Run");
         Context context = getApplicationContext();
-        int id = getResources().getIdentifier("pic00", "drawable", context.getPackageName());
+        int id = getResources().getIdentifier("pic01", "drawable", context.getPackageName());
         test.put("imagePath", id);
         workoutsDB.add(test);
         workoutsDB.add(test);
@@ -101,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = (ImageView) findViewById(R.id.swipeDetection);
         imageView.getLayoutParams().width = (int) heightScreen;
-        imageView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
+        swipeListener = new OnSwipeTouchListener(MainActivity.this) {
             public void moving(int x){
                 if (currentScreen == -1){
                     page0.setTranslationX(x + widthScreen);
@@ -125,13 +134,66 @@ public class MainActivity extends AppCompatActivity {
                     moveNext(-loc);
                 }
             }
-        });
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            public void movingOpenSettings(int x){
+                if (x < widthScreen*3/4) {
+                    settingsPageCard.setTranslationX(x - widthScreen * 3 / 4);
+                    settingsBlur.setCardBackgroundColor((int) Color.argb((Float) 0.25f*(1+(x - widthScreen * 3 / 4)/(widthScreen*3/4)),0.0f,0.0f,0.0f));
+                }
+            }
+            public void cancelOpenSettings(int loc){
+                ValueAnimator anim = ValueAnimator.ofFloat(loc, 0);
+                anim.setDuration((int) ((widthScreen * 3 / 4 - loc)/animationVelocity));
+                anim.start();
+
+                anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        Float value = (Float) animation.getAnimatedValue();
+                        settingsPageCard.setTranslationX(value-widthScreen*3/4);
+                        settingsBlur.setCardBackgroundColor((int) Color.argb((Float) 0.25f*(1+(value-widthScreen*3/4)/(widthScreen*3/4)),0.0f,0.0f,0.0f));
+                    }
+                });
+            }
+            public void confirmOpenSettings(int loc){
+                openSettings(loc);
+            }
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            public void movingCloseSettings(int x){
+                if (x < 0) {
+                    settingsPageCard.setTranslationX(x);
+                    settingsBlur.setCardBackgroundColor((int) Color.argb((Float) 0.25f*(1+(x)/(widthScreen*3/4)),0.0f,0.0f,0.0f));
+                }
+            }
+            public void cancelCloseSettings(int loc){
+                ValueAnimator anim = ValueAnimator.ofFloat(loc, 0);
+                anim.setDuration((int) ((widthScreen*3/4 + loc)/animationVelocity));
+                anim.start();
+
+                anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        Float value = (Float) animation.getAnimatedValue();
+                        settingsPageCard.setTranslationX(value);
+                        settingsBlur.setCardBackgroundColor((int) Color.argb((Float) 0.25f*(1+(value)/(widthScreen*3/4)),0.0f,0.0f,0.0f));
+                    }
+                });
+            }
+            public void confirmCloseSettings(int loc){
+                closeSettings(loc);
+            }
+        };
+        imageView.setOnTouchListener(swipeListener);
     }
 
     public void updateUI(){
 
         pageL1.setTranslationX(-widthScreen);
         pageR1.setTranslationX(widthScreen);
+        settingsPageCard.getLayoutParams().width = (int) widthScreen*3/4;
+        settingsPageCard.setTranslationX(-widthScreen*3/4);
+        butCancelSettings.getLayoutParams().width = (int) widthScreen/4;
+        butCancelSettings.setTranslationX(widthScreen/4);
 
         textUser.setText((String) userDB.get("username"));
 
@@ -281,6 +343,49 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void openSettings(int loc){
+        if (loc < widthScreen*3/4) {
+            ValueAnimator anim = ValueAnimator.ofFloat(loc, widthScreen * 3 / 4);
+            anim.setDuration((int) ((widthScreen * 3 / 4 - loc) / animationVelocity));
+            anim.start();
+
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    settingsPageCard.setTranslationX(value - widthScreen * 3 / 4);
+                    settingsBlur.setCardBackgroundColor((int) Color.argb((Float) 0.25f*(1+(value - widthScreen * 3 / 4)/(widthScreen*3/4)),0.0f,0.0f,0.0f));
+                }
+            });
+        } else {
+            settingsPage.setTranslationX(0);
+        }
+        swipeListener.setSettings(true);
+        butCancelSettings.setTranslationX(0);
+    }
+
+    public void closeSettings(int loc){
+
+        if (loc > -widthScreen*3/4) {
+            ValueAnimator anim = ValueAnimator.ofFloat(loc, -widthScreen*3/4);
+            anim.setDuration((int) ((widthScreen*3/4 + loc) / animationVelocity));
+            anim.start();
+
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    settingsPageCard.setTranslationX(value);
+                    settingsBlur.setCardBackgroundColor((int) Color.argb((Float) 0.25f*(1+(value)/(widthScreen*3/4)),0.0f,0.0f,0.0f));
+                }
+            });
+        } else {
+            settingsPage.setTranslationX(-widthScreen*3/4);
+        }
+        swipeListener.setSettings(false);
+        butCancelSettings.setTranslationX(widthScreen/4);
+    }
+
     public void butProgress(View caller) {
         if (currentScreen == -1){
 
@@ -309,5 +414,13 @@ public class MainActivity extends AppCompatActivity {
         } else if (currentScreen == 1){
 
         }
+    }
+
+    public void butSettings(View caller){
+        openSettings(0);
+    }
+
+    public void butCloseSettings(View caller){
+        closeSettings(0);
     }
 }

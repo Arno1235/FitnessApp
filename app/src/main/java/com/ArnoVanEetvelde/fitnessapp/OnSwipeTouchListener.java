@@ -10,8 +10,8 @@ import android.widget.Toast;
 
 public class OnSwipeTouchListener implements OnTouchListener {
 
-    private int prevX, prevY, startX, velocityTreshold = 5, swipeTreshold = 300;
-    private boolean allowSwipe = false, first = true;
+    private int prevX, prevY, startX, velocityTreshold = 2, swipeTreshold = 200, settingsTreshold = 100;
+    private boolean allowSwipe = false, first = true, settings = false;
 
     public OnSwipeTouchListener (Context ctx){
     }
@@ -30,25 +30,70 @@ public class OnSwipeTouchListener implements OnTouchListener {
             first = true;
         } else if (event.getAction() == MotionEvent.ACTION_MOVE){
             if (allowSwipe){
-                moving(x - prevX);
+                if (settings){
+                    movingCloseSettings(x - prevX);
+                } else {
+                    if (startX > settingsTreshold) {
+                        moving(x - prevX);
+                    } else {
+                        movingOpenSettings(x - prevX);
+                    }
+                }
             } else if (Math.abs(prevX - x) > velocityTreshold && Math.abs(prevX - x) > Math.abs(prevY - y) && first){
                 allowSwipe = true;
             }
             first = false;
         } else if (event.getAction() == MotionEvent.ACTION_UP && allowSwipe){
             if (Math.abs(x - startX) > swipeTreshold){
-                confirm(x - startX);
+                if (settings){
+                    confirmCloseSettings(x - startX);
+                    settings = false;
+                } else {
+                    if (startX > settingsTreshold) {
+                        confirm(x - startX);
+                    } else {
+                        if (x - startX > swipeTreshold) {
+                            confirmOpenSettings(x - startX);
+                            settings = true;
+                        }
+                    }
+                }
             } else {
-                cancel(x - startX);
+                if (settings){
+                    cancelCloseSettings(x - startX);
+                } else {
+                    if (startX > settingsTreshold) {
+                        cancel(x - startX);
+                    } else {
+                        cancelOpenSettings(x - startX);
+                    }
+                }
             }
         }
         return true;
     }
 
+    public void setSettings (boolean settings){
+        this.settings = settings;
+    }
+
     public void moving(int x){
+    }
+    public void movingOpenSettings(int x){
+    }
+    public void movingCloseSettings(int x){
     }
     public void cancel(int loc){
     }
+    public void cancelOpenSettings(int loc){
+    }
+    public void cancelCloseSettings(int loc){
+    }
     public void confirm(int loc){
     }
+    public void confirmOpenSettings(int loc){
+    }
+    public void confirmCloseSettings(int loc){
+    }
+
 }
