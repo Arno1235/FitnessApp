@@ -52,8 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, Object> userDB;
     private ArrayList<HashMap<String, Object>> workoutsDB;
     private TextView textUser, textAverage, textMonth, textWeek, textDay;
-    private RecyclerView listWorkoutHome;
-    private WorkoutHomeAdapter listAdapter;
+    private RecyclerView listWorkoutHome, listWorkout;
+    private WorkoutHomeAdapter listAdapterHome;
+    private WorkoutAdapter listAdapterWorkout;
     private CardView settingsPageCard, settingsBlur;
     private OnSwipeTouchListener swipeListener;
     private ArrayList<Double> testData;
@@ -94,15 +95,20 @@ public class MainActivity extends AppCompatActivity {
         textDay = (TextView) findViewById(R.id.textDay);
 
         listWorkoutHome = (RecyclerView) findViewById(R.id.listWorkoutHome);
-        LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
-        listWorkoutHome.setLayoutManager(layoutManager);
+        LinearLayoutManager layoutManagerHome = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
+        listWorkoutHome.setLayoutManager(layoutManagerHome);
         listWorkoutHome.addItemDecoration(new HorizontalSpaceItemDecoration(32));
+
+        listWorkout = (RecyclerView) findViewById(R.id.listWorkout);
+        LinearLayoutManager layoutManagerWorkout = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
+        listWorkout.setLayoutManager(layoutManagerWorkout);
+        listWorkout.addItemDecoration(new VerticalSpaceItemDecoration(32));
 
         workoutsDB = new ArrayList<>();
         HashMap<String, Object> test = new HashMap<>();
         test.put("name", "Run");
         Context context = getApplicationContext();
-        int id = getResources().getIdentifier("pic01", "drawable", context.getPackageName());
+        int id = getResources().getIdentifier("pic02", "drawable", context.getPackageName());
         test.put("imagePath", id);
         workoutsDB.add(test);
         workoutsDB.add(test);
@@ -114,8 +120,12 @@ public class MainActivity extends AppCompatActivity {
         workoutsDB.add(test);
         workoutsDB.add(test);
         workoutsDB.add(test);
-        listAdapter = new WorkoutHomeAdapter(workoutsDB, this);
-        listWorkoutHome.setAdapter(listAdapter);
+
+        listAdapterHome = new WorkoutHomeAdapter(workoutsDB, this);
+        listWorkoutHome.setAdapter(listAdapterHome);
+
+        listAdapterWorkout = new WorkoutAdapter(workoutsDB, this);
+        listWorkout.setAdapter(listAdapterWorkout);
 
         currentScreen = 0;
 
