@@ -13,6 +13,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -43,18 +44,19 @@ import java.util.concurrent.TimeUnit;
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class MainActivity extends AppCompatActivity {
 
-    private LinearLayout page0, pageL1, pageR1, settingsPage;
+    private LinearLayout page0, pageL1, pageR1, settingsPage, progressChartProgress;
     private int currentScreen, numberOfScreens = 3;
     private float widthScreen, heightScreen, animationVelocity = 2f;
     private ImageView appBar, progressIcon, homeIcon, workoutIcon, imageView, butCancelSettings;
     private View selector;
     private HashMap<String, Object> userDB;
     private ArrayList<HashMap<String, Object>> workoutsDB;
-    private TextView textUser, textAverage;
+    private TextView textUser, textAverage, textMonth, textWeek, textDay;
     private RecyclerView listWorkoutHome;
     private WorkoutHomeAdapter listAdapter;
     private CardView settingsPageCard, settingsBlur;
     private OnSwipeTouchListener swipeListener;
+    private ArrayList<Double> testData;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -87,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
         textUser = (TextView) findViewById(R.id.textUser);
         butCancelSettings = (ImageView) findViewById(R.id.butCancelSettings);
         textAverage = (TextView) findViewById(R.id.textAverage);
+        textMonth = (TextView) findViewById(R.id.textMonth);
+        textWeek = (TextView) findViewById(R.id.textWeek);
+        textDay = (TextView) findViewById(R.id.textDay);
 
         listWorkoutHome = (RecyclerView) findViewById(R.id.listWorkoutHome);
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
@@ -217,25 +222,25 @@ public class MainActivity extends AppCompatActivity {
         progressIcon.setTranslationX(widthScreen*40/1480);
         workoutIcon.setTranslationX(-widthScreen*40/1480);
 
-        ArrayList<Double> data = new ArrayList<>();
-        data.add(0.0);
-        data.add(1.0);
-        data.add(3.0);
-        data.add(2.0);
-        data.add(3.0);
-        data.add(4.0);
-        data.add(1.0);
+        testData = new ArrayList<>();
+        testData.add(0.0);
+        testData.add(1.0);
+        testData.add(3.0);
+        testData.add(2.0);
+        testData.add(3.0);
+        testData.add(4.0);
+        testData.add(1.0);
 
         double average = 0.0;
 
-        for (double number : data){
+        for (double number : testData){
             average += number;
         }
-        average = average/data.size();
+        average = average/testData.size();
 
         textAverage.setText("Average: " + Double.toString(average));
 
-        ProgressChart progressChartH = new ProgressChart(data, 2.0, 0.05, 0.5, 5, false, 8, 0);
+        ProgressChart progressChartH = new ProgressChart(testData, 2.0, 0.05, 0.5, 5, false, 8, 0);
         XYMultipleSeriesRenderer mRendererH = progressChartH.getChartView();
         XYMultipleSeriesDataset datasetH = progressChartH.getDataSet();
         GraphicalView chartViewH = ChartFactory.getLineChartView(getApplicationContext(), datasetH, mRendererH);
@@ -243,12 +248,12 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout progressChartHome = (LinearLayout) findViewById(R.id.progressChartHome);
         progressChartHome.addView(chartViewH);
 
-        ProgressChart progressChartP = new ProgressChart(data, 2.0, 0.05, 0.5, 10, true, 8, 2);
+        ProgressChart progressChartP = new ProgressChart(testData, 2.0, 0.05, 0.5, 10, true, 8, 2);
         XYMultipleSeriesRenderer mRendererP = progressChartP.getChartView();
         XYMultipleSeriesDataset datasetP = progressChartP.getDataSet();
         GraphicalView chartViewP = ChartFactory.getLineChartView(getApplicationContext(), datasetP, mRendererP);
 
-        LinearLayout progressChartProgress = (LinearLayout) findViewById(R.id.progressChartProgress);
+        progressChartProgress = (LinearLayout) findViewById(R.id.progressChartProgress);
         progressChartProgress.addView(chartViewP);
     }
 
@@ -463,5 +468,53 @@ public class MainActivity extends AppCompatActivity {
 
     public void butCloseSettings(View caller){
         closeSettings(0);
+    }
+
+    public void butMonth (View caller){
+        textMonth.setTypeface(null, Typeface.BOLD);
+        textWeek.setTypeface(null, Typeface.NORMAL);
+        textDay.setTypeface(null, Typeface.NORMAL);
+
+        progressChartProgress.removeAllViews();
+
+        ProgressChart progressChartP = new ProgressChart(testData, 2.0, 0.05, 0.5, 10, true, 8, 2);
+        XYMultipleSeriesRenderer mRendererP = progressChartP.getChartView();
+        XYMultipleSeriesDataset datasetP = progressChartP.getDataSet();
+        GraphicalView chartViewP = ChartFactory.getLineChartView(getApplicationContext(), datasetP, mRendererP);
+
+        progressChartProgress = (LinearLayout) findViewById(R.id.progressChartProgress);
+        progressChartProgress.addView(chartViewP);
+    }
+
+    public void butWeek (View caller){
+        textMonth.setTypeface(null, Typeface.NORMAL);
+        textWeek.setTypeface(null, Typeface.BOLD);
+        textDay.setTypeface(null, Typeface.NORMAL);
+
+        progressChartProgress.removeAllViews();
+
+        ProgressChart progressChartP = new ProgressChart(testData, 2.0, 0.05, 0.5, 10, true, 8, 1);
+        XYMultipleSeriesRenderer mRendererP = progressChartP.getChartView();
+        XYMultipleSeriesDataset datasetP = progressChartP.getDataSet();
+        GraphicalView chartViewP = ChartFactory.getLineChartView(getApplicationContext(), datasetP, mRendererP);
+
+        progressChartProgress = (LinearLayout) findViewById(R.id.progressChartProgress);
+        progressChartProgress.addView(chartViewP);
+    }
+
+    public void butDay (View caller){
+        textMonth.setTypeface(null, Typeface.NORMAL);
+        textWeek.setTypeface(null, Typeface.NORMAL);
+        textDay.setTypeface(null, Typeface.BOLD);
+
+        progressChartProgress.removeAllViews();
+
+        ProgressChart progressChartP = new ProgressChart(testData, 2.0, 0.05, 0.5, 10, true, 8, 0);
+        XYMultipleSeriesRenderer mRendererP = progressChartP.getChartView();
+        XYMultipleSeriesDataset datasetP = progressChartP.getDataSet();
+        GraphicalView chartViewP = ChartFactory.getLineChartView(getApplicationContext(), datasetP, mRendererP);
+
+        progressChartProgress = (LinearLayout) findViewById(R.id.progressChartProgress);
+        progressChartProgress.addView(chartViewP);
     }
 }

@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.WorkoutHolder> {
+public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutHolder> {
 
     private ArrayList<HashMap<String, Object>> workoutsDB;
     private Context mContext;
 
-    public WorkoutHomeAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context) {
+    public WorkoutAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context) {
         this.workoutsDB = workoutsDB;
         this.mContext = context;
     }
