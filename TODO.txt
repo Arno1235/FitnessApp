@@ -1,3 +1,4 @@
 Ask username when login in with google and user doesn't exist
 Swipe on graph doesnt work
 Swip on workout list doesnt work when in settings
+Text instead of list when there are no workouts
