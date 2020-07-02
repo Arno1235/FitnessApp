@@ -35,6 +35,7 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private View selector;
     private HashMap<String, Object> userDB;
     private ArrayList<HashMap<String, Object>> workoutsDB;
-    private TextView textUser;
+    private TextView textUser, textAverage;
     private RecyclerView listWorkoutHome;
     private WorkoutHomeAdapter listAdapter;
     private CardView settingsPageCard, settingsBlur;
@@ -85,11 +86,12 @@ public class MainActivity extends AppCompatActivity {
         selector = findViewById(R.id.selector);
         textUser = (TextView) findViewById(R.id.textUser);
         butCancelSettings = (ImageView) findViewById(R.id.butCancelSettings);
+        textAverage = (TextView) findViewById(R.id.textAverage);
 
         listWorkoutHome = (RecyclerView) findViewById(R.id.listWorkoutHome);
         LinearLayoutManager layoutManager= new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         listWorkoutHome.setLayoutManager(layoutManager);
-        listWorkoutHome.addItemDecoration(new HorizontalSpaceItemDecoration(20));
+        listWorkoutHome.addItemDecoration(new HorizontalSpaceItemDecoration(32));
 
         workoutsDB = new ArrayList<>();
         HashMap<String, Object> test = new HashMap<>();
@@ -224,12 +226,30 @@ public class MainActivity extends AppCompatActivity {
         data.add(4.0);
         data.add(1.0);
 
-        ProgressChart progressChart = new ProgressChart(data, 0.05, 0.5);
-        XYMultipleSeriesRenderer mRenderer = progressChart.getChartView();
-        XYMultipleSeriesDataset dataset = progressChart.getDataSet();
-        GraphicalView chartView = ChartFactory.getLineChartView(getApplicationContext(), dataset, mRenderer);
+        double average = 0.0;
+
+        for (double number : data){
+            average += number;
+        }
+        average = average/data.size();
+
+        textAverage.setText("Average: " + Double.toString(average));
+
+        ProgressChart progressChartH = new ProgressChart(data, 2.0, 0.05, 0.5, 5, false, 8, 0);
+        XYMultipleSeriesRenderer mRendererH = progressChartH.getChartView();
+        XYMultipleSeriesDataset datasetH = progressChartH.getDataSet();
+        GraphicalView chartViewH = ChartFactory.getLineChartView(getApplicationContext(), datasetH, mRendererH);
+
         LinearLayout progressChartHome = (LinearLayout) findViewById(R.id.progressChartHome);
-        progressChartHome.addView(chartView);
+        progressChartHome.addView(chartViewH);
+
+        ProgressChart progressChartP = new ProgressChart(data, 2.0, 0.05, 0.5, 10, true, 8, 2);
+        XYMultipleSeriesRenderer mRendererP = progressChartP.getChartView();
+        XYMultipleSeriesDataset datasetP = progressChartP.getDataSet();
+        GraphicalView chartViewP = ChartFactory.getLineChartView(getApplicationContext(), datasetP, mRendererP);
+
+        LinearLayout progressChartProgress = (LinearLayout) findViewById(R.id.progressChartProgress);
+        progressChartProgress.addView(chartViewP);
     }
 
     public void movePrevious(int loc){

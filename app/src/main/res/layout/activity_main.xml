@@ -33,22 +33,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/pageL1"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/button6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button2" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/page0"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
@@ -79,7 +63,7 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="32dp" />
+            android:layout_height="64dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listWorkoutHome"
@@ -88,16 +72,60 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="32dp" />
+            android:layout_height="64dp" />
 
         <LinearLayout
             android:id="@+id/progressChartHome"
             android:layout_width="match_parent"
-            android:layout_height="256dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
+            android:layout_marginBottom="128dp"
             android:orientation="vertical" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pageL1"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textMyProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:text="My Progress"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textAverage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingTop="0dp"
+            android:paddingRight="16dp"
+            android:text="0"
+            android:textSize="24sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="64dp" />
+
+        <LinearLayout
+            android:id="@+id/progressChartProgress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="256dp"
+            android:orientation="vertical" />
     </LinearLayout>
 
     <ImageView
