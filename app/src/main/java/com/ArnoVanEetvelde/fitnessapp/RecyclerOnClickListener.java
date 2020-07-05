@@ -20,8 +20,8 @@ public class RecyclerOnClickListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         int itemPosition = mRecyclerView.getChildLayoutPosition(view);
-        Toast.makeText(mContext, Integer.toString(itemPosition), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(mContext, LoginActivity.class);
-        //mContext.startActivity(intent);
+        Intent intent = new Intent(mContext, StartWorkout.class);
+        intent.putExtra("workoutID", itemPosition);
+        mContext.startActivity(intent);
     }
 }
