@@ -20,7 +20,7 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
     private WorkoutAdapter.WorkoutHolder mWorkoutHolder;
     private CustomLinearLayoutManager customLinearLayoutManager;
     private float startX, startY;
-    private boolean first = true;
+    private boolean first = true, click = true;
     private int width, currentScreen = 0, maxMovement, ratioTreshold = 2, confirmTreshold, animationVelocity = 2, clickTreshold = 24;
 
     public RecyclerOnSwipeListener(RecyclerView mRecyclerView, Context mContext, WorkoutAdapter.WorkoutHolder mWorkoutHolder, CustomLinearLayoutManager customLinearLayoutManager, int width){
@@ -50,10 +50,15 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
                 motionEvent.getRawX() - startX > 0 && motionEvent.getRawX() - startX + currentScreen*maxMovement < maxMovement) {
                 mWorkoutHolder.moveCard(motionEvent.getRawX() - startX + currentScreen*maxMovement);
             }
+            if (Math.abs(startX - motionEvent.getRawX()) > clickTreshold){
+                click = false;
+            }
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
 
             if (currentScreen == 0) {
-                if (motionEvent.getRawX() - startX > confirmTreshold) {
+                if (click){
+                    Toast.makeText(mContext, "confirm " + mRecyclerView.getChildLayoutPosition(view), Toast.LENGTH_SHORT).show();
+                } else if (motionEvent.getRawX() - startX > confirmTreshold) {
                     currentScreen = 1;
                     if (motionEvent.getRawX() - startX > maxMovement) {
                         cardAnimation(maxMovement, maxMovement);
@@ -72,8 +77,8 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
                     cardAnimation(motionEvent.getRawX() - startX, 0);
                 }
             } else if (currentScreen == -1){
-                if (startX > width/2 + 96 && Math.abs(startX - motionEvent.getRawX()) < clickTreshold){
-                    Toast.makeText(mContext, "remove", Toast.LENGTH_SHORT).show();
+                if (startX > width/2 + 96 && click){
+                    Toast.makeText(mContext, "remove " + mRecyclerView.getChildLayoutPosition(view), Toast.LENGTH_SHORT).show();
                 } else if (motionEvent.getRawX() - startX > confirmTreshold + maxMovement) {
                     currentScreen = 1;
                     if (motionEvent.getRawX() - startX > maxMovement) {
@@ -93,8 +98,8 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
                     }
                 }
             } else if (currentScreen == 1){
-                if (startX < width/2 - 96 && Math.abs(startX - motionEvent.getRawX()) < clickTreshold){
-                    Toast.makeText(mContext, "edit", Toast.LENGTH_SHORT).show();
+                if (startX < width/2 - 96 && click){
+                    Toast.makeText(mContext, "edit " + mRecyclerView.getChildLayoutPosition(view), Toast.LENGTH_SHORT).show();
                 } else if (motionEvent.getRawX() - startX < -confirmTreshold - maxMovement){
                     currentScreen = -1;
                     if (startX - motionEvent.getRawX() > maxMovement) {
@@ -115,10 +120,9 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
                 }
             }
 
-        }
+            click = true;
 
-        int itemPosition = mRecyclerView.getChildLayoutPosition(view);
-        //Toast.makeText(mContext, Integer.toString(itemPosition) + " - " + motionEvent.getRawY(), Toast.LENGTH_SHORT).show();
+        }
 
         return true;
     }
