@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         listWorkoutHome.addItemDecoration(new HorizontalSpaceItemDecoration(32));
 
         listWorkout = (RecyclerView) findViewById(R.id.listWorkout);
-        LinearLayoutManager layoutManagerWorkout = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
-        listWorkout.setLayoutManager(layoutManagerWorkout);
+        CustomLinearLayoutManager customLinearLayoutManager = new CustomLinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
+        listWorkout.setLayoutManager(customLinearLayoutManager);
         listWorkout.addItemDecoration(new VerticalSpaceItemDecoration(32));
 
         workoutsDB = new ArrayList<>();
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         listAdapterHome = new WorkoutHomeAdapter(workoutsDB, this, listWorkoutHome);
         listWorkoutHome.setAdapter(listAdapterHome);
 
-        listAdapterWorkout = new WorkoutAdapter(workoutsDB, this);
+        listAdapterWorkout = new WorkoutAdapter(workoutsDB, this, listWorkout);
         listWorkout.setAdapter(listAdapterWorkout);
 
         currentScreen = 0;

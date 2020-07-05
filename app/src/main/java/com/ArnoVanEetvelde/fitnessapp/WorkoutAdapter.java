@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -17,18 +18,21 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
 
     private ArrayList<HashMap<String, Object>> workoutsDB;
     private Context mContext;
+    private RecyclerView mRecyclerView;
     private View.OnTouchListener mOnSwipeListener;
 
     public WorkoutAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView) {
         this.workoutsDB = workoutsDB;
         this.mContext = context;
-        this.mOnSwipeListener = new RecyclerOnSwipeListener(mRecyclerView, context);
+        this.mRecyclerView = mRecyclerView;
     }
 
     @Override
     public WorkoutHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.list_workout, parent, false);
+        WorkoutHolder mWorkoutHolder = new WorkoutHolder(view);
+        mOnSwipeListener = new RecyclerOnSwipeListener(mRecyclerView, mContext, mWorkoutHolder);
         view.setOnTouchListener(mOnSwipeListener);
         return new WorkoutHolder(view);
     }
@@ -54,12 +58,19 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
 
         private TextView textName;
         private ImageView thumbnail;
+        private CardView mCardView;
 
         public WorkoutHolder(View itemView) {
             super(itemView);
 
             textName = itemView.findViewById(R.id.textName);
             thumbnail = itemView.findViewById(R.id.thumbnail);
+            mCardView = itemView.findViewById(R.id.topLayer);
+
+        }
+
+        public void moveCard(float x){
+            mCardView.setTranslationX(x);
         }
 
         public void setWorkoutName(String name) {
