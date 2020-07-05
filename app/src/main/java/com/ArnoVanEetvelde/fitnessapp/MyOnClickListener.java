@@ -1,6 +1,7 @@
 package com.ArnoVanEetvelde.fitnessapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,5 +21,7 @@ public class MyOnClickListener implements View.OnClickListener {
     public void onClick(View view) {
         int itemPosition = mRecyclerView.getChildLayoutPosition(view);
         Toast.makeText(mContext, Integer.toString(itemPosition), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(mContext, LoginActivity.class);
+        mContext.startActivity(intent);
     }
 }

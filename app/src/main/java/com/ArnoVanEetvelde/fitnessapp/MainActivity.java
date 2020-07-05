@@ -3,43 +3,29 @@ package com.ArnoVanEetvelde.fitnessapp;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.ColorSpace;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class MainActivity extends AppCompatActivity {
@@ -56,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private WorkoutHomeAdapter listAdapterHome;
     private WorkoutAdapter listAdapterWorkout;
     private CardView settingsPageCard, settingsBlur;
-    private OnSwipeTouchListener swipeListener;
+    private MainSwipeListener swipeListener;
     private ArrayList<Double> testData;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -133,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = (ImageView) findViewById(R.id.swipeDetection);
         imageView.getLayoutParams().width = (int) heightScreen;
-        swipeListener = new OnSwipeTouchListener(MainActivity.this) {
+        swipeListener = new MainSwipeListener(MainActivity.this) {
             public void moving(int x){
                 if (currentScreen == -1){
                     page0.setTranslationX(x + widthScreen);
