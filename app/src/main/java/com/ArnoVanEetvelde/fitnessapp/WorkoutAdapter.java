@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -19,12 +20,16 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
     private ArrayList<HashMap<String, Object>> workoutsDB;
     private Context mContext;
     private RecyclerView mRecyclerView;
+    private CustomLinearLayoutManager customLinearLayoutManager;
     private View.OnTouchListener mOnSwipeListener;
+    private int width;
 
-    public WorkoutAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView) {
+    public WorkoutAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView, CustomLinearLayoutManager customLinearLayoutManager, int width) {
         this.workoutsDB = workoutsDB;
         this.mContext = context;
         this.mRecyclerView = mRecyclerView;
+        this.customLinearLayoutManager = customLinearLayoutManager;
+        this.width = width;
     }
 
     @Override
@@ -32,7 +37,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.list_workout, parent, false);
         WorkoutHolder mWorkoutHolder = new WorkoutHolder(view);
-        mOnSwipeListener = new RecyclerOnSwipeListener(mRecyclerView, mContext, mWorkoutHolder);
+        mOnSwipeListener = new RecyclerOnSwipeListener(mRecyclerView, mContext, mWorkoutHolder, customLinearLayoutManager, width);
         view.setOnTouchListener(mOnSwipeListener);
         return new WorkoutHolder(view);
     }
@@ -58,19 +63,19 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
 
         private TextView textName;
         private ImageView thumbnail;
-        private CardView mCardView;
+        private CardView topLayer;
 
         public WorkoutHolder(View itemView) {
             super(itemView);
 
             textName = itemView.findViewById(R.id.textName);
             thumbnail = itemView.findViewById(R.id.thumbnail);
-            mCardView = itemView.findViewById(R.id.topLayer);
+            topLayer = itemView.findViewById(R.id.topLayer);
 
         }
 
         public void moveCard(float x){
-            mCardView.setTranslationX(x);
+            topLayer.setTranslationX(x);
         }
 
         public void setWorkoutName(String name) {

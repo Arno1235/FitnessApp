@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         listAdapterHome = new WorkoutHomeAdapter(workoutsDB, this, listWorkoutHome);
         listWorkoutHome.setAdapter(listAdapterHome);
 
-        listAdapterWorkout = new WorkoutAdapter(workoutsDB, this, listWorkout);
+        listAdapterWorkout = new WorkoutAdapter(workoutsDB, this, listWorkout, customLinearLayoutManager, (int) widthScreen);
         listWorkout.setAdapter(listAdapterWorkout);
 
         currentScreen = 0;
