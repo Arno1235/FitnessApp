@@ -22,7 +22,7 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
     public WorkoutHomeAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView) {
         this.workoutsDB = workoutsDB;
         this.mContext = context;
-        this.mOnClickListener = new MyOnClickListener(mRecyclerView, context);
+        this.mOnClickListener = new RecyclerOnClickListener(mRecyclerView, context);
     }
 
     @Override

@@ -7,12 +7,12 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyOnClickListener implements View.OnClickListener {
+public class RecyclerOnClickListener implements View.OnClickListener {
 
     private RecyclerView mRecyclerView;
     private Context mContext;
 
-    public MyOnClickListener(RecyclerView mRecyclerView, Context mContext){
+    public RecyclerOnClickListener(RecyclerView mRecyclerView, Context mContext){
         this.mContext = mContext;
         this.mRecyclerView = mRecyclerView;
     }
@@ -20,8 +20,8 @@ public class MyOnClickListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         int itemPosition = mRecyclerView.getChildLayoutPosition(view);
-        Toast.makeText(mContext, Integer.toString(itemPosition), Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, Integer.toString(itemPosition), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(mContext, LoginActivity.class);
-        mContext.startActivity(intent);
+        //mContext.startActivity(intent);
     }
 }

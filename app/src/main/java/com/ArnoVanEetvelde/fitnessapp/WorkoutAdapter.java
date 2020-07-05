@@ -17,17 +17,19 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
 
     private ArrayList<HashMap<String, Object>> workoutsDB;
     private Context mContext;
+    private View.OnTouchListener mOnSwipeListener;
 
-    public WorkoutAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context) {
+    public WorkoutAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView) {
         this.workoutsDB = workoutsDB;
         this.mContext = context;
+        this.mOnSwipeListener = new RecyclerOnSwipeListener(mRecyclerView, context);
     }
 
     @Override
     public WorkoutHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-
         View view = layoutInflater.inflate(R.layout.list_workout, parent, false);
+        view.setOnTouchListener(mOnSwipeListener);
         return new WorkoutHolder(view);
     }
 
