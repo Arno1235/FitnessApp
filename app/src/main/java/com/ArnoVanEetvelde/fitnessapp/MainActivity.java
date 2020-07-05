@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         workoutsDB.add(test);
         workoutsDB.add(test);
 
-        listAdapterHome = new WorkoutHomeAdapter(workoutsDB, this);
+        listAdapterHome = new WorkoutHomeAdapter(workoutsDB, this, listWorkoutHome);
         listWorkoutHome.setAdapter(listAdapterHome);
 
         listAdapterWorkout = new WorkoutAdapter(workoutsDB, this);

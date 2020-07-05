@@ -17,17 +17,19 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
 
     private ArrayList<HashMap<String, Object>> workoutsDB;
     private Context mContext;
+    private View.OnClickListener mOnClickListener;
 
-    public WorkoutHomeAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context) {
+    public WorkoutHomeAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView) {
         this.workoutsDB = workoutsDB;
         this.mContext = context;
+        this.mOnClickListener = new MyOnClickListener(mRecyclerView, context);
     }
 
     @Override
     public WorkoutHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-
         View view = layoutInflater.inflate(R.layout.list_workout_home, parent, false);
+        view.setOnClickListener(mOnClickListener);
         return new WorkoutHolder(view);
     }
 
