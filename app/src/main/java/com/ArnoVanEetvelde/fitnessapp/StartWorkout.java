@@ -47,8 +47,6 @@ public class StartWorkout extends AppCompatActivity {
         test.add("Naam2");
         test.add("Naam1");
         test.add("Naam2");
-        test.add("Naam1");
-        test.add("Naam2");
 
         ExerciseAdapter exerciseAdapter = new ExerciseAdapter(test);
         listExercises.setAdapter(exerciseAdapter);
