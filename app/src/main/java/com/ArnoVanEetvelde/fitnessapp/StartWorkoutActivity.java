@@ -5,10 +5,12 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,5 +65,10 @@ public class StartWorkoutActivity extends AppCompatActivity {
         textName.setText("Test Naam");
         textDescription.setText("Test Description");
 
+    }
+
+    public void goToDoWorkout(View caller){
+        Intent intent = new Intent(this, DoWorkoutActivity.class);
+        startActivity(intent);
     }
 }
