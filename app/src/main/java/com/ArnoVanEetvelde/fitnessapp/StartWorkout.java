@@ -2,6 +2,8 @@ package com.ArnoVanEetvelde.fitnessapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -10,10 +12,13 @@ import android.util.TypedValue;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class StartWorkout extends AppCompatActivity {
 
     private CardView cardView;
     private TextView textName, textDescription;
+    private RecyclerView listExercises;
     private float widthScreen, heightScreen;
 
     @Override
@@ -29,6 +34,24 @@ public class StartWorkout extends AppCompatActivity {
         cardView = (CardView) findViewById(R.id.cardView);
         textName = (TextView) findViewById(R.id.textName);
         textDescription = (TextView) findViewById(R.id.textDescription);
+
+        listExercises = (RecyclerView) findViewById(R.id.listExercises);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
+        listExercises.setLayoutManager(layoutManager);
+        listExercises.addItemDecoration(new VerticalSpaceItemDecoration(32));
+
+        ArrayList<String> test = new ArrayList<>();
+        test.add("Naam1");
+        test.add("Naam2");
+        test.add("Naam1");
+        test.add("Naam2");
+        test.add("Naam1");
+        test.add("Naam2");
+        test.add("Naam1");
+        test.add("Naam2");
+
+        ExerciseAdapter exerciseAdapter = new ExerciseAdapter(test);
+        listExercises.setAdapter(exerciseAdapter);
 
         updateUI();
 
