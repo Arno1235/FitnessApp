@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class StartWorkout extends AppCompatActivity {
+public class StartWorkoutActivity extends AppCompatActivity {
 
     private CardView cardView;
     private TextView textName, textDescription;
