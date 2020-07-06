@@ -10,7 +10,8 @@ import android.widget.Toast;
 
 public class MainSwipeListener implements OnTouchListener {
 
-    private int prevX, prevY, startX, velocityTreshold = 2, swipeTreshold = 200, settingsTreshold = 100;
+    private int prevX, prevY, startX, swipeTreshold = 200, settingsTreshold = 100;
+    private final double velocityTreshold = 0.5;
     private boolean allowSwipe = false, first = true, settings = false;
 
     public MainSwipeListener(Context ctx){
