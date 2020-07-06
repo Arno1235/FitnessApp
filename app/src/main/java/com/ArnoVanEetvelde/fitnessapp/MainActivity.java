@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout page0, pageL1, pageR1, settingsPage, progressChartProgress;
     private int currentScreen, numberOfScreens = 3;
     private float widthScreen, heightScreen, animationVelocity = 2f;
-    private ImageView appBar, progressIcon, homeIcon, workoutIcon, imageView, butCancelSettings;
+    private ImageView imageView, butCancelSettings;
     private View selector;
     private HashMap<String, Object> userDB;
     private ArrayList<HashMap<String, Object>> workoutsDB;
@@ -68,10 +68,6 @@ public class MainActivity extends AppCompatActivity {
         heightScreen = displayMetrics.heightPixels;
         widthScreen = displayMetrics.widthPixels;
 
-        appBar = (ImageView) findViewById(R.id.appBar);
-        progressIcon = (ImageView) findViewById(R.id.progressIcon);
-        homeIcon = (ImageView) findViewById(R.id.homeIcon);
-        workoutIcon = (ImageView) findViewById(R.id.workoutIcon);
         selector = findViewById(R.id.selector);
         textUser = (TextView) findViewById(R.id.textUser);
         butCancelSettings = (ImageView) findViewById(R.id.butCancelSettings);
@@ -205,18 +201,6 @@ public class MainActivity extends AppCompatActivity {
         butCancelSettings.setTranslationX(widthScreen/4);
 
         textUser.setText((String) userDB.get("username"));
-
-        appBar.getLayoutParams().height = (int) widthScreen*40/180;
-        progressIcon.getLayoutParams().height = (int) widthScreen*40/360;
-        homeIcon.getLayoutParams().height = (int) widthScreen*40/360;
-        workoutIcon.getLayoutParams().height = (int) widthScreen*40/360;
-        selector.getLayoutParams().width = (int) widthScreen*40/360;
-        progressIcon.setTranslationY(-(widthScreen*40/180 - widthScreen*40/360)/2);
-        homeIcon.setTranslationY(-(widthScreen*40/180 - widthScreen*40/360)/2);
-        workoutIcon.setTranslationY(-(widthScreen*40/180 - widthScreen*40/360)/2);
-        selector.setTranslationY(-(widthScreen*40/180 - widthScreen*40/360)/4);
-        progressIcon.setTranslationX(widthScreen*40/1480);
-        workoutIcon.setTranslationX(-widthScreen*40/1480);
 
         testData = new ArrayList<>();
         testData.add(0.0);

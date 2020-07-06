@@ -44,7 +44,7 @@
             android:id="@+id/listWorkout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="128dp" />
+            android:layout_marginBottom="96dp" />
 
     </LinearLayout>
 
@@ -192,53 +192,80 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/appBar"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="48dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/appbar" />
-
-    <ImageView
-        android:id="@+id/progressIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:onClick="butProgress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/homeIcon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/chart_icon" />
-
-    <ImageView
-        android:id="@+id/homeIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:onClick="butHome"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/home_icon" />
-
-    <ImageView
-        android:id="@+id/workoutIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:onClick="butWorkout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/homeIcon"
-        app:srcCompat="@drawable/workout_icon" />
-
-    <View
-        android:id="@+id/selector"
-        android:layout_width="40dp"
-        android:layout_height="3dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/appBar"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="96dp"
+        app:cardCornerRadius="64dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/progressIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="24dp"
+                android:onClick="butProgress"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/chart_icon" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintGuide_percent="0.5"
+                android:orientation="vertical" />
+
+            <ImageView
+                android:id="@+id/homeIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="24dp"
+                android:onClick="butHome"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/home_icon" />
+
+            <ImageView
+                android:id="@+id/workoutIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="24dp"
+                android:onClick="butWorkout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:srcCompat="@drawable/workout_icon" />
+
+            <View
+                android:id="@+id/selector"
+                android:layout_width="40dp"
+                android:layout_height="3dp"
+                android:layout_marginBottom="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/settingsBlur"
@@ -255,7 +282,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:cardCornerRadius="24dp"
-        app:cardElevation="12dp"
+        app:cardElevation="128dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

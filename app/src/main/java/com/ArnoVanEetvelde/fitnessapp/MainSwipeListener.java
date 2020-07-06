@@ -11,7 +11,7 @@ import android.widget.Toast;
 public class MainSwipeListener implements OnTouchListener {
 
     private int prevX, prevY, startX, swipeTreshold = 200, settingsTreshold = 100;
-    private final double velocityTreshold = 0.5;
+    private final double velocityTreshold = 0;
     private boolean allowSwipe = false, first = true, settings = false;
 
     public MainSwipeListener(Context ctx){
@@ -40,7 +40,8 @@ public class MainSwipeListener implements OnTouchListener {
                         movingOpenSettings(x - prevX);
                     }
                 }
-            } else if (Math.abs(prevX - x) > velocityTreshold && Math.abs(prevX - x) > Math.abs(prevY - y) && first){
+//            } else if (Math.abs(prevX - x) >= velocityTreshold && Math.abs(prevX - x) > Math.abs(prevY - y) && first){
+            } else if (Math.abs(prevX - x) >= velocityTreshold && first){
                 allowSwipe = true;
             }
             first = false;
