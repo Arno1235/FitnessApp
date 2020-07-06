@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class StartWorkoutActivity extends AppCompatActivity {
 
     private CardView cardView;
-    private TextView textName, textDescription;
+    private TextView textName, textDescription, textNrRounds;
     private RecyclerView listExercises;
     private float widthScreen, heightScreen;
 
@@ -36,6 +36,7 @@ public class StartWorkoutActivity extends AppCompatActivity {
         cardView = (CardView) findViewById(R.id.cardView);
         textName = (TextView) findViewById(R.id.textName);
         textDescription = (TextView) findViewById(R.id.textDescription);
+        textNrRounds = (TextView) findViewById(R.id.textNrRounds);
 
         listExercises = (RecyclerView) findViewById(R.id.listExercises);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
@@ -64,6 +65,7 @@ public class StartWorkoutActivity extends AppCompatActivity {
 
         textName.setText("Test Naam");
         textDescription.setText("Test Description");
+        textNrRounds.setText("3");
 
     }
 
