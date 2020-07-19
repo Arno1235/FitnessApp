@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,21 +48,27 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
 
     @Override
     public int getItemCount() {
-        return workoutsDB == null? 0: workoutsDB.size();
+        return workoutsDB == null? 1: workoutsDB.size() + 1;
     }
 
     @Override
     public void onBindViewHolder(@NonNull WorkoutHolder holder, final int position) {
-        final HashMap<String, Object> workout = workoutsDB.get(position);
+        if (position < workoutsDB.size()) {
+            final HashMap<String, Object> workout = workoutsDB.get(position);
 
-        holder.setWorkoutName((String)workout.get("name"));
-        if (workout.containsKey("imagePath")) {
-            holder.setWorkoutImage((int) workout.get("imagePath"));
-        }
-        if (workout.containsKey("description")){
-            holder.setWorkoutDescription((String)workout.get("description"));
+            holder.setWorkoutName((String) workout.get("name"));
+            if (workout.containsKey("imagePath")) {
+                holder.setWorkoutImage((int) workout.get("imagePath"));
+            }
+            if (workout.containsKey("description")) {
+                holder.setWorkoutDescription((String) workout.get("description"));
+            } else {
+                holder.setWorkoutDescription("");
+            }
         } else {
+            holder.setWorkoutName("Add New");
             holder.setWorkoutDescription("");
+            holder.setWorkoutImage(mContext.getResources().getIdentifier("pic" + Integer.toString((int) Math.round(Math.random() * 17)), "drawable", mContext.getPackageName()));
         }
 
         // You can set click listners to indvidual items in the viewholder here
@@ -86,7 +93,9 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
         }
 
         public void moveCard(float x){
-            topLayer.setTranslationX(x);
+            if(mRecyclerView.getChildLayoutPosition(itemView) < workoutsDB.size()) {
+                topLayer.setTranslationX(x);
+            }
         }
 
         public void setWorkoutName(String name) {
