@@ -3,6 +3,7 @@ package com.ArnoVanEetvelde.fitnessapp;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -20,10 +21,10 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
     private WorkoutAdapter.WorkoutHolder mWorkoutHolder;
     private CustomLinearLayoutManager customLinearLayoutManager;
     private float startX, startY;
-    private boolean first = true, click = true;
+    private boolean first = true, click = true, WorkOrExer;
     private int width, currentScreen = 0, maxMovement, ratioTreshold = 2, confirmTreshold, animationVelocity = 2, clickTreshold = 24;
 
-    public RecyclerOnSwipeListener(RecyclerView mRecyclerView, Context mContext, WorkoutAdapter.WorkoutHolder mWorkoutHolder, CustomLinearLayoutManager customLinearLayoutManager, int width){
+    public RecyclerOnSwipeListener(boolean WorkOrExer, RecyclerView mRecyclerView, Context mContext, WorkoutAdapter.WorkoutHolder mWorkoutHolder, CustomLinearLayoutManager customLinearLayoutManager, int width){
         this.mContext = mContext;
         this.mRecyclerView = mRecyclerView;
         this.mWorkoutHolder = mWorkoutHolder;
@@ -31,6 +32,7 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
         this.maxMovement = (width/2) - 256;
         this.confirmTreshold = maxMovement/2;
         this.width = width;
+        this.WorkOrExer = WorkOrExer;
     }
 
     @Override
@@ -100,6 +102,10 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
             } else if (currentScreen == 1){
                 if (startX < width/2 - 96 && click){
                     Toast.makeText(mContext, "edit " + mRecyclerView.getChildLayoutPosition(view), Toast.LENGTH_SHORT).show();
+                    if (WorkOrExer) {
+                        Intent intent = new Intent(mContext, EditWorkoutActivity.class);
+                        mContext.startActivity(intent);
+                    }
                 } else if (motionEvent.getRawX() - startX < -confirmTreshold - maxMovement){
                     currentScreen = -1;
                     if (startX - motionEvent.getRawX() > maxMovement) {
