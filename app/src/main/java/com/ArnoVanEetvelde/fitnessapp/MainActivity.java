@@ -9,15 +9,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -496,5 +500,12 @@ public class MainActivity extends AppCompatActivity {
 
         progressChartProgress = (LinearLayout) findViewById(R.id.progressChartProgress);
         progressChartProgress.addView(chartViewP);
+    }
+
+    public void butSignOut(View caller){
+        FirebaseAuth.getInstance().signOut();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 }

@@ -3,12 +3,15 @@ package com.ArnoVanEetvelde.fitnessapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -220,6 +223,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void addUserIfNotExisting(){
         String emailAddress = mAuth.getCurrentUser().getEmail().toString();
+
         db.collection("User")
                 .whereEqualTo("email", emailAddress)
                 .get()
@@ -228,7 +232,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             if (task.getResult().size() == 0){
-                                addUser(mAuth.getCurrentUser().getEmail());
+                                askUsername();
                             } else {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     userDB = new HashMap<>();
@@ -246,11 +250,64 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    public void askUsername(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if (!isFinishing()){
+
+                    final EditText input = new EditText(LoginActivity.this);
+
+                    new AlertDialog.Builder(LoginActivity.this)
+                            .setTitle("Username:")
+                            //.setMessage("Beuh")
+                            .setCancelable(true)
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    addUser(mAuth.getCurrentUser().getEmail(), input.getText().toString());
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mAuth.signOut();
+                        }
+                    }).setView(input).show();
+                }
+            }
+        });
+    }
+
     public void addUser(String emailAddress){
 
         Map<String, Object> user = new HashMap<>();
         user.put("email", emailAddress);
         user.put("username", textUsername.getText().toString());
+        user.put("goal", 0);
+
+        db.collection("User")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        //Toast.makeText(getApplicationContext(), "DocumentSnapshot added with ID: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
+                        getUser(emailAddress);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "Error adding document" + e, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void addUser(String emailAddress, String userName){
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("email", emailAddress);
+        user.put("username", userName);
         user.put("goal", 0);
 
         db.collection("User")

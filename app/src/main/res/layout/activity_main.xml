@@ -296,10 +296,11 @@
             android:paddingRight="24dp">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/butSignOut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Button" />
+                android:onClick="butSignOut"
+                android:text="Sign Out" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
