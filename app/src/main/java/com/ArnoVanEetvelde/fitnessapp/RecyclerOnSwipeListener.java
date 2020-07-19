@@ -105,6 +105,9 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
                     if (WorkOrExer) {
                         Intent intent = new Intent(mContext, EditWorkoutActivity.class);
                         mContext.startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(mContext, EditExerciseActivity.class);
+                        mContext.startActivity(intent);
                     }
                 } else if (motionEvent.getRawX() - startX < -confirmTreshold - maxMovement){
                     currentScreen = -1;
