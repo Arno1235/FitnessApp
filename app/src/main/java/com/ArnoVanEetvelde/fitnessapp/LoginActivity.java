@@ -1,17 +1,24 @@
 package com.ArnoVanEetvelde.fitnessapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -33,6 +40,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN;
     private EditText textEmail, textPassword, textUsername;
-    private Button butConfirm, butSwitch;
+    private TextView textButConfirm, textButSwitch;
+    private CardView cardInformation, cardConfirm, cardSwitch;
     private boolean boolLoging;
     private HashMap<String, Object> userDB;
 
@@ -75,14 +85,17 @@ public class LoginActivity extends AppCompatActivity {
         textEmail = (EditText) findViewById(R.id.textEmail);
         textPassword = (EditText) findViewById(R.id.textPassword);
         textUsername = (EditText) findViewById(R.id.textUsername);
-        butConfirm = (Button) findViewById(R.id.butConfirm);
-        butSwitch = (Button) findViewById(R.id.butSwitch);
+        textButConfirm = (TextView) findViewById(R.id.textButConfirm);
+        textButSwitch = (TextView) findViewById(R.id.textButSwitch);
+        cardInformation = (CardView) findViewById(R.id.cardInformation);
+        cardConfirm = (CardView) findViewById(R.id.cardConfirm);
+        cardSwitch = (CardView) findViewById(R.id.cardSwitch);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        textUsername.setVisibility(View.GONE);
+        textUsername.setVisibility(View.INVISIBLE);
         boolLoging = true;
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -100,14 +113,173 @@ public class LoginActivity extends AppCompatActivity {
 
     public void switchMode(View caller){
         if (boolLoging) {
-            textUsername.setVisibility(View.VISIBLE);
-            butConfirm.setText("Sign up");
-            butSwitch.setText("Login");
+
+            int initialHeight = cardInformation.getHeight();
+            int marginHeight = (int) dpToPx(32);
+            int addHeight = textEmail.getHeight() + marginHeight;
+
+            ValueAnimator anim2 = ValueAnimator.ofFloat(0, 1);
+            anim2.setDuration(250);
+
+            ValueAnimator anim = ValueAnimator.ofFloat(1, 0);
+            anim.setDuration(250);
+            anim.start();
+
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    textButConfirm.setAlpha(value);
+                    textButSwitch.setAlpha(value);
+                }
+            });
+            anim.addListener(new ValueAnimator.AnimatorListener(){
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    textButSwitch.setText("LOGIN");
+                    textButConfirm.setText("SIGN UP");
+                    anim2.start();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                    textButSwitch.setText("LOGIN");
+                    textButConfirm.setText("SIGN UP");
+                    anim2.start();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+
+            anim2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    textButConfirm.setAlpha(value);
+                    textButSwitch.setAlpha(value);
+                }
+            });
+
+            ValueAnimator anim3 = ValueAnimator.ofFloat(0, 1);
+            anim3.setDuration(500);
+            anim3.start();
+
+            anim3.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    if (value*addHeight > marginHeight){
+                        if (textUsername.getVisibility() != View.VISIBLE){
+                            textUsername.setVisibility(View.VISIBLE);
+                        }
+                        textUsername.setAlpha(value);
+                    }
+
+                    cardInformation.getLayoutParams().height = initialHeight + (int) (value*addHeight);
+                    cardInformation.requestLayout();
+                }
+            });
+
             boolLoging = false;
         } else {
-            textUsername.setVisibility(View.GONE);
-            butConfirm.setText("Login");
-            butSwitch.setText("Sign up");
+
+            int initialHeight = cardInformation.getHeight();
+            int minHeight = textEmail.getHeight() + (int) dpToPx(32);
+
+            ValueAnimator anim2 = ValueAnimator.ofFloat(0, 1);
+            anim2.setDuration(250);
+
+            ValueAnimator anim = ValueAnimator.ofFloat(1, 0);
+            anim.setDuration(250);
+            anim.start();
+
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    textButConfirm.setAlpha(value);
+                    textButSwitch.setAlpha(value);
+                }
+            });
+            anim.addListener(new ValueAnimator.AnimatorListener(){
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    textButSwitch.setText("SIGN UP");
+                    textButConfirm.setText("LOGIN");
+                    anim2.start();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                    textButSwitch.setText("SIGN UP");
+                    textButConfirm.setText("LOGIN");
+                    anim2.start();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+
+            anim2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    textButConfirm.setAlpha(value);
+                    textButSwitch.setAlpha(value);
+                }
+            });
+
+            ValueAnimator anim3 = ValueAnimator.ofFloat(0, 1);
+            anim3.setDuration(500);
+            anim3.start();
+
+            anim3.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    Float value = (Float) animation.getAnimatedValue();
+                    textUsername.setAlpha(1-value);
+                    cardInformation.getLayoutParams().height = initialHeight - (int) (value*minHeight);
+                    cardInformation.requestLayout();
+                }
+            });
+            anim3.addListener(new ValueAnimator.AnimatorListener(){
+
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    textUsername.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+                    textUsername.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+
             boolLoging = true;
         }
     }
@@ -327,66 +499,13 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void logout(View caller){
-        mAuth.signOut();
-    }
-
     public void forgotPassword(View caller){
         String email = textEmail.getText().toString();
         mAuth.sendPasswordResetEmail(email);
     }
 
-    public void deleteDB(String doc){
-        db.collection("User").document(doc)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "DocumentSnapshot successfully deleted!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Error deleting document" + e, Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    public void removeUser(View caller){
-        db.collection("User")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Toast.makeText(getApplicationContext(), document.getId() + " => " + document.getData(), Toast.LENGTH_SHORT).show();
-                                deleteDB(document.getId());
-                            }
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Error getting documents." + task.getException(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    public void getDB(View caller) {
-        db.collection("User")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Toast.makeText(getApplicationContext(), document.getId() + " => " + document.getData(), Toast.LENGTH_SHORT).show();
-                                //deleteDB(document.getId());
-                            }
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Error getting documents." + task.getException(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+    public float dpToPx(float dp){
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
 
 }
