@@ -67,8 +67,14 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
             }
         } else {
             holder.setWorkoutName("Add New");
-            holder.setWorkoutDescription("");
-            holder.setWorkoutImage(mContext.getResources().getIdentifier("pic" + Integer.toString((int) Math.round(Math.random() * 17)), "drawable", mContext.getPackageName()));
+            holder.setWorkoutDescription("Click to add new");
+            String picture = "pic";
+            int random = (int) Math.round(Math.random() * 17);
+            if (random < 10){
+                picture += "0";
+            }
+            picture += Integer.toString(random);
+            holder.setWorkoutImage(mContext.getResources().getIdentifier(picture, "drawable", mContext.getPackageName()));
         }
 
         // You can set click listners to indvidual items in the viewholder here

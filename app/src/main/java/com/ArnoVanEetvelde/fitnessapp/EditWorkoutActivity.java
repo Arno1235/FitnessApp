@@ -51,14 +51,14 @@ public class EditWorkoutActivity extends AppCompatActivity {
         HashMap<String, Object> test = new HashMap<>();
         test.put("name", "10 pushups");
         test.put("description", "test beschrijving");
-        exercicesDB.add(test);
-        exercicesDB.add(test);
-        exercicesDB.add(test);
-        exercicesDB.add(test);
-        exercicesDB.add(test);
-        exercicesDB.add(test);
-        exercicesDB.add(test);
-        exercicesDB.add(test);
+//        exercicesDB.add(test);
+//        exercicesDB.add(test);
+//        exercicesDB.add(test);
+//        exercicesDB.add(test);
+//        exercicesDB.add(test);
+//        exercicesDB.add(test);
+//        exercicesDB.add(test);
+//        exercicesDB.add(test);
 
         WorkoutAdapter listAdapterWorkout = new WorkoutAdapter(false, exercicesDB, this, listExercise, customLinearLayoutManager, (int) widthScreen);
         listExercise.setAdapter(listAdapterWorkout);
