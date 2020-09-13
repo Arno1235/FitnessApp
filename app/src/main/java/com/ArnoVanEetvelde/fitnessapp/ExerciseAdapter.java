@@ -15,10 +15,10 @@ import java.util.HashMap;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ExerciseHolder> {
 
-    private ArrayList<String> exerciseNames;
+    private ArrayList<HashMap<String, Object>> exercisesDB;
 
-    public ExerciseAdapter(ArrayList<String> exerciseNames) {
-        this.exerciseNames = exerciseNames;
+    public ExerciseAdapter(ArrayList<HashMap<String, Object>> exercisesDB) {
+        this.exercisesDB = exercisesDB;
     }
 
     @Override
@@ -30,12 +30,12 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
     @Override
     public int getItemCount() {
-        return exerciseNames == null? 0: exerciseNames.size();
+        return exercisesDB == null? 0: exercisesDB.size();
     }
 
     @Override
     public void onBindViewHolder(@NonNull ExerciseHolder holder, final int position) {
-        holder.setExerciseName(exerciseNames.get(position));
+        holder.setExerciseName(exercisesDB.get(position).get("name").toString());
     }
 
     public class ExerciseHolder extends RecyclerView.ViewHolder {

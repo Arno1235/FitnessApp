@@ -19,10 +19,10 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
     private Context mContext;
     private View.OnClickListener mOnClickListener;
 
-    public WorkoutHomeAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView) {
+    public WorkoutHomeAdapter(ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView, String userID) {
         this.workoutsDB = workoutsDB;
         this.mContext = context;
-        this.mOnClickListener = new RecyclerOnClickListener(mRecyclerView, context);
+        this.mOnClickListener = new RecyclerOnClickListener(mRecyclerView, context, workoutsDB, userID);
     }
 
     @Override

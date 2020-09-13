@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     private CardView cardInformation, cardConfirm, cardSwitch;
     private boolean boolLoging;
     private HashMap<String, Object> userDB;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -350,6 +352,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void goToMainPage(String emailAddress){
+
+        progressDialog = new ProgressDialog(LoginActivity.this);
+        progressDialog.setMessage("Logging in...");
+        progressDialog.show();
+
         db.collection("User")
                 .whereEqualTo("email", emailAddress)
                 .get()
@@ -362,6 +369,9 @@ public class LoginActivity extends AppCompatActivity {
                                 userDB.put("email", document.get("email"));
                                 userDB.put("username", document.get("username"));
                                 userDB.put("goal", document.get("goal"));
+                                userDB.put("ID", document.getId());
+
+                                progressDialog.hide();
 
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 intent.putExtra("user", userDB);
@@ -370,6 +380,7 @@ public class LoginActivity extends AppCompatActivity {
                                 break;
                             }
                         } else {
+                            progressDialog.hide();
                             Toast.makeText(getApplicationContext(), "Error getting documents." + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                     }

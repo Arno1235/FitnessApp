@@ -1,5 +1,6 @@
 package com.ArnoVanEetvelde.fitnessapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,19 +22,30 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class MainActivity extends AppCompatActivity {
+
+    private FirebaseFirestore db;
+
+    private ProgressDialog progressDialog;
 
     private LinearLayout page0, pageL1, pageR1, settingsPage, progressChartProgress;
     private int currentScreen, numberOfScreens = 3;
@@ -48,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private CardView settingsPageCard, settingsBlur;
     private MainSwipeListener swipeListener;
     private ArrayList<Double> testData;
+    private String userID;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -59,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         if (extras != null) {
             userDB = (HashMap<String, Object>) extras.getSerializable("user");
         }
+
+        db = FirebaseFirestore.getInstance();
 
         page0 = (LinearLayout) findViewById(R.id.page0);
         pageL1 = (LinearLayout) findViewById(R.id.pageL1);
@@ -81,41 +97,13 @@ public class MainActivity extends AppCompatActivity {
         textDay = (TextView) findViewById(R.id.textDay);
 
         listWorkoutHome = (RecyclerView) findViewById(R.id.listWorkoutHome);
-        LinearLayoutManager layoutManagerHome = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
-        listWorkoutHome.setLayoutManager(layoutManagerHome);
-        listWorkoutHome.addItemDecoration(new HorizontalSpaceItemDecoration(32));
-
         listWorkout = (RecyclerView) findViewById(R.id.listWorkout);
-        CustomLinearLayoutManager customLinearLayoutManager = new CustomLinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
-        listWorkout.setLayoutManager(customLinearLayoutManager);
-        listWorkout.addItemDecoration(new VerticalSpaceItemDecoration(32));
 
         workoutsDB = new ArrayList<>();
-        HashMap<String, Object> test = new HashMap<>();
-        test.put("name", "Run");
-        Context context = getApplicationContext();
-        int id = getResources().getIdentifier("pic02", "drawable", context.getPackageName());
-        test.put("imagePath", id);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-        workoutsDB.add(test);
-
-        listAdapterHome = new WorkoutHomeAdapter(workoutsDB, this, listWorkoutHome);
-        listWorkoutHome.setAdapter(listAdapterHome);
-
-        listAdapterWorkout = new WorkoutAdapter(true, workoutsDB, this, listWorkout, customLinearLayoutManager, (int) widthScreen);
-        listWorkout.setAdapter(listAdapterWorkout);
+        getWorkoutsFromDB();
+        //TODO: getProgressFromDB();
 
         currentScreen = 0;
-
-        updateUI();
 
         imageView = (ImageView) findViewById(R.id.swipeDetection);
         imageView.getLayoutParams().width = (int) heightScreen;
@@ -197,6 +185,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateUI(){
 
+        LinearLayoutManager layoutManagerHome = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
+        listWorkoutHome.setLayoutManager(layoutManagerHome);
+        listWorkoutHome.addItemDecoration(new HorizontalSpaceItemDecoration(32));
+
+        CustomLinearLayoutManager customLinearLayoutManager = new CustomLinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
+        listWorkout.setLayoutManager(customLinearLayoutManager);
+        listWorkout.addItemDecoration(new VerticalSpaceItemDecoration(32));
+
+        listAdapterHome = new WorkoutHomeAdapter(workoutsDB, this, listWorkoutHome, userID);
+        listWorkoutHome.setAdapter(listAdapterHome);
+
+        listAdapterWorkout = new WorkoutAdapter(true, workoutsDB, this, listWorkout, customLinearLayoutManager, (int) widthScreen);
+        listWorkout.setAdapter(listAdapterWorkout);
+
         pageL1.setTranslationX(-widthScreen);
         pageR1.setTranslationX(widthScreen);
         settingsPageCard.getLayoutParams().width = (int) widthScreen*3/4;
@@ -239,6 +241,40 @@ public class MainActivity extends AppCompatActivity {
 
         progressChartProgress = (LinearLayout) findViewById(R.id.progressChartProgress);
         progressChartProgress.addView(chartViewP);
+    }
+
+    public void getWorkoutsFromDB(){
+
+        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Syncing data...");
+        progressDialog.show();
+
+        userID = userDB.get("ID").toString();
+
+        db.collection("User").document(userID).collection("WorkOuts")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                HashMap<String, Object> workoutObject = new HashMap<>();
+                                workoutObject.put("name", document.get("Name").toString());
+                                Context context = getApplicationContext();
+                                int id = getResources().getIdentifier(document.get("Picture").toString(), "drawable", context.getPackageName());
+                                workoutObject.put("imagePath", id);
+                                workoutObject.put("ID", document.getId());
+
+                                workoutsDB.add(workoutObject);
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error getting documents." + task.getException(), Toast.LENGTH_SHORT).show();
+                        }
+                        progressDialog.hide();
+                        updateUI();
+                    }
+                });
+
     }
 
     public void movePrevious(int loc){
