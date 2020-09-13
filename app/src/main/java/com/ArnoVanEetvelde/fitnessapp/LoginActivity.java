@@ -1,7 +1,6 @@
 package com.ArnoVanEetvelde.fitnessapp;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -10,14 +9,10 @@ import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private GoogleSignInClient mGoogleSignInClient;
-    private int RC_SIGN_IN;
+    private final int RC_SIGN_IN = 9001;
     private EditText textEmail, textPassword, textUsername;
     private TextView textButConfirm, textButSwitch;
     private CardView cardInformation, cardConfirm, cardSwitch;
@@ -60,18 +55,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        RC_SIGN_IN = 9001;
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        // Build a GoogleSignInClient with the options specified by gso.
+
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,15 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         boolLoging = true;
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            getUser(user.getEmail().toString());
-        }
-    }
-
-    public void goToMain(){
-        if (mAuth.getCurrentUser() != null && userDB != null) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("user", userDB);
-            startActivity(intent);
+            goToMainPage(user.getEmail().toString());
         }
     }
 
@@ -292,17 +275,16 @@ public class LoginActivity extends AppCompatActivity {
 
     public void signup(){
         String email = textEmail.getText().toString();
+        String userName = textUsername.getText().toString();
         String password = textPassword.getText().toString();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            addUser(user.getEmail());
+                            addUser(user.getEmail(), userName);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -317,9 +299,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            getUser(mAuth.getCurrentUser().getEmail().toString());
+                            goToMainPage(mAuth.getCurrentUser().getEmail().toString());
                         } else {
-                            // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                             textPassword.setText("");
                         }
@@ -368,7 +349,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void getUser(String emailAddress) {
+    public void goToMainPage(String emailAddress){
         db.collection("User")
                 .whereEqualTo("email", emailAddress)
                 .get()
@@ -381,7 +362,11 @@ public class LoginActivity extends AppCompatActivity {
                                 userDB.put("email", document.get("email"));
                                 userDB.put("username", document.get("username"));
                                 userDB.put("goal", document.get("goal"));
-                                goToMain();
+
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.putExtra("user", userDB);
+                                startActivity(intent);
+
                                 break;
                             }
                         } else {
@@ -405,11 +390,7 @@ public class LoginActivity extends AppCompatActivity {
                                 askUsername();
                             } else {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                    userDB = new HashMap<>();
-                                    userDB.put("email", document.get("email"));
-                                    userDB.put("username", document.get("username"));
-                                    userDB.put("goal", document.get("goal"));
-                                    goToMain();
+                                    goToMainPage(emailAddress);
                                     break;
                                 }
                             }
@@ -431,12 +412,16 @@ public class LoginActivity extends AppCompatActivity {
 
                     new AlertDialog.Builder(LoginActivity.this)
                             .setTitle("Username:")
-                            //.setMessage("Beuh")
                             .setCancelable(true)
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    addUser(mAuth.getCurrentUser().getEmail(), input.getText().toString());
+                                    if (input.getText().toString() != null && input.getText().toString().equals("") == false) {
+                                        addUser(mAuth.getCurrentUser().getEmail(), input.getText().toString());
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Username is required.", Toast.LENGTH_SHORT).show();
+                                        mAuth.signOut();
+                                    }
                                 }
                             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
@@ -447,30 +432,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public void addUser(String emailAddress){
-
-        Map<String, Object> user = new HashMap<>();
-        user.put("email", emailAddress);
-        user.put("username", textUsername.getText().toString());
-        user.put("goal", 0);
-
-        db.collection("User")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        //Toast.makeText(getApplicationContext(), "DocumentSnapshot added with ID: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
-                        getUser(emailAddress);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Error adding document" + e, Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
     public void addUser(String emailAddress, String userName){
@@ -485,21 +446,25 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        //Toast.makeText(getApplicationContext(), "DocumentSnapshot added with ID: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
-                        getUser(emailAddress);
+                        goToMainPage(emailAddress);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Error adding document" + e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Error adding user" + e, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     public void forgotPassword(View caller){
         String email = textEmail.getText().toString();
-        mAuth.sendPasswordResetEmail(email);
+        if (email.equals("") == false && email != null) {
+            mAuth.sendPasswordResetEmail(email);
+            Toast.makeText(getApplicationContext(), "An email was send to your email address.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Email is required.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public float dpToPx(float dp){
