@@ -366,7 +366,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                userDB.clear();
+                                userDB = new HashMap<>();
                                 userDB = (HashMap<String, Object>) document.getData();
                                 userDB.put("ID", document.getId());
 

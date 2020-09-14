@@ -29,7 +29,7 @@ public class RecyclerOnClickListener implements View.OnClickListener {
     public void onClick(View view) {
         int itemPosition = mRecyclerView.getChildLayoutPosition(view);
         Intent intent = new Intent(mContext, StartWorkoutActivity.class);
-        intent.putExtra("workoutObject", (Parcelable) workoutsDB.get(itemPosition));
+        intent.putExtra("workoutObject", workoutsDB.get(itemPosition));
         intent.putExtra("userID", userID);
         mContext.startActivity(intent);
     }

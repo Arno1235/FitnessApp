@@ -41,7 +41,7 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull WorkoutHolder holder, final int position) {
-        final Map<String, Object> workout = workoutsDB.get(position);
+        final HashMap<String, Object> workout = workoutsDB.get(position);
 
         holder.setWorkoutName((String) workout.get("name"));
         holder.setWorkoutImage((int)workout.get("imagePath"));

@@ -247,12 +247,12 @@ public class MainActivity extends AppCompatActivity {
     public void getWorkoutsFromDB(){
 
         progressDialog = new ProgressDialog(MainActivity.this);
-        progressDialog.setMessage("Syncing data...");
+        progressDialog.setMessage("Loading data...");
         progressDialog.show();
 
         userID = userDB.get("ID").toString();
 
-        db.collection("User").document(userID).collection("WorkOuts")
+        db.collection("User").document(userID).collection("Workouts")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

@@ -85,26 +85,26 @@ public class StartWorkoutActivity extends AppCompatActivity {
         cardView.setTranslationY(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32f, getResources().getDisplayMetrics()));
 
         textName.setText(workoutObject.get("name").toString());
-        textDescription.setText("Test Description");
-        textNrRounds.setText("3");
+        textDescription.setText(workoutObject.get("description").toString());
+        textNrRounds.setText(workoutObject.get("rounds").toString());
 
     }
 
     public void getExercisesFromDB (){
 
         progressDialog = new ProgressDialog(StartWorkoutActivity.this);
-        progressDialog.setMessage("Syncing data...");
+        progressDialog.setMessage("Loading data...");
         progressDialog.show();
 
-        db.collection("User").document(userID).collection("WorkOuts").document(workoutObject.get("ID").toString()).collection("Exercise")
+        db.collection("User").document(userID).collection("Workouts").document(workoutObject.get("ID").toString()).collection("Exercise")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                HashMap<String, Object> exercise = new HashMap<>();
-                                exercise.put("name", document.get("name").toString());
+                                HashMap<String, Object> exercise = (HashMap<String, Object>) document.getData();
+                                exercise.put("ID", document.getId());
                                 exercisesDB.add(exercise);
                             }
                         } else {
