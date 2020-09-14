@@ -27,14 +27,16 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
     private View.OnTouchListener mOnSwipeListener;
     private int width;
     private boolean WorkOrExer;
+    private String userID;
 
-    public WorkoutAdapter(boolean WorkOrExer, ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView, CustomLinearLayoutManager customLinearLayoutManager, int width) {
+    public WorkoutAdapter(boolean WorkOrExer, ArrayList<HashMap<String, Object>> workoutsDB, Context context, RecyclerView mRecyclerView, CustomLinearLayoutManager customLinearLayoutManager, int width, String userID) {
         this.workoutsDB = workoutsDB;
         this.mContext = context;
         this.mRecyclerView = mRecyclerView;
         this.customLinearLayoutManager = customLinearLayoutManager;
         this.width = width;
         this.WorkOrExer = WorkOrExer;
+        this.userID = userID;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.list_workout, parent, false);
         WorkoutHolder mWorkoutHolder = new WorkoutHolder(view);
-        mOnSwipeListener = new RecyclerOnSwipeListener(WorkOrExer, mRecyclerView, mContext, mWorkoutHolder, customLinearLayoutManager, width);
+        mOnSwipeListener = new RecyclerOnSwipeListener(WorkOrExer, mRecyclerView, mContext, mWorkoutHolder, customLinearLayoutManager, width, userID, workoutsDB);
         view.setOnTouchListener(mOnSwipeListener);
         return new WorkoutHolder(view);
     }

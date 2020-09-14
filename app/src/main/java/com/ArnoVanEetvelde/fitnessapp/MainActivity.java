@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         listAdapterHome = new WorkoutHomeAdapter(workoutsDB, this, listWorkoutHome, userID);
         listWorkoutHome.setAdapter(listAdapterHome);
 
-        listAdapterWorkout = new WorkoutAdapter(true, workoutsDB, this, listWorkout, customLinearLayoutManager, (int) widthScreen);
+        listAdapterWorkout = new WorkoutAdapter(true, workoutsDB, this, listWorkout, customLinearLayoutManager, (int) widthScreen, userID);
         listWorkout.setAdapter(listAdapterWorkout);
 
         pageL1.setTranslationX(-widthScreen);

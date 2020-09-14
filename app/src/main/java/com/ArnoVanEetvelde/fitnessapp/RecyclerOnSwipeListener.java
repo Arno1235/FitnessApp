@@ -14,6 +14,9 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class RecyclerOnSwipeListener implements View.OnTouchListener {
 
     private RecyclerView mRecyclerView;
@@ -23,8 +26,10 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
     private float startX, startY;
     private boolean first = true, click = true, WorkOrExer;
     private int width, currentScreen = 0, maxMovement, ratioTreshold = 2, confirmTreshold, animationVelocity = 2, clickTreshold = 24;
+    private String userID;
+    private ArrayList<HashMap<String, Object>> workoutsDB;
 
-    public RecyclerOnSwipeListener(boolean WorkOrExer, RecyclerView mRecyclerView, Context mContext, WorkoutAdapter.WorkoutHolder mWorkoutHolder, CustomLinearLayoutManager customLinearLayoutManager, int width){
+    public RecyclerOnSwipeListener(boolean WorkOrExer, RecyclerView mRecyclerView, Context mContext, WorkoutAdapter.WorkoutHolder mWorkoutHolder, CustomLinearLayoutManager customLinearLayoutManager, int width, String userID, ArrayList<HashMap<String, Object>> workoutsDB){
         this.mContext = mContext;
         this.mRecyclerView = mRecyclerView;
         this.mWorkoutHolder = mWorkoutHolder;
@@ -33,6 +38,8 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
         this.confirmTreshold = maxMovement/2;
         this.width = width;
         this.WorkOrExer = WorkOrExer;
+        this.userID = userID;
+        this.workoutsDB = workoutsDB;
     }
 
     @Override
@@ -59,7 +66,11 @@ public class RecyclerOnSwipeListener implements View.OnTouchListener {
 
             if (currentScreen == 0) {
                 if (click){
-                    Toast.makeText(mContext, "confirm " + mRecyclerView.getChildLayoutPosition(view), Toast.LENGTH_SHORT).show();
+                    int itemPosition = mRecyclerView.getChildLayoutPosition(view);
+                    Intent intent = new Intent(mContext, StartWorkoutActivity.class);
+                    intent.putExtra("workoutObject", workoutsDB.get(itemPosition));
+                    intent.putExtra("userID", userID);
+                    mContext.startActivity(intent);
                 } else if (motionEvent.getRawX() - startX > confirmTreshold) {
                     currentScreen = 1;
                     if (motionEvent.getRawX() - startX > maxMovement) {

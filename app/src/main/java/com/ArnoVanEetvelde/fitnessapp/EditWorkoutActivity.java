@@ -29,12 +29,18 @@ public class EditWorkoutActivity extends AppCompatActivity {
     private CardView butSave, butRemove, cardPopup;
     private RecyclerView listExercise;
     private int heightScreen, widthScreen;
+    private String userID;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_workout);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            userID = extras.getString("userID");
+        }
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -86,7 +92,7 @@ public class EditWorkoutActivity extends AppCompatActivity {
         exercicesDB.add(test);
         exercicesDB.add(test);
 
-        WorkoutAdapter listAdapterWorkout = new WorkoutAdapter(false, exercicesDB, this, listExercise, customLinearLayoutManager, (int) widthScreen);
+        WorkoutAdapter listAdapterWorkout = new WorkoutAdapter(false, exercicesDB, this, listExercise, customLinearLayoutManager, (int) widthScreen, userID);
         listExercise.setAdapter(listAdapterWorkout);
 
     }
