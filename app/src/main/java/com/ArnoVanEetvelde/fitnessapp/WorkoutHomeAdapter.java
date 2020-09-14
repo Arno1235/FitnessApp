@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.WorkoutHolder> {
 
@@ -40,13 +41,10 @@ public class WorkoutHomeAdapter extends RecyclerView.Adapter<WorkoutHomeAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull WorkoutHolder holder, final int position) {
-        final HashMap<String, Object> workout = workoutsDB.get(position);
+        final Map<String, Object> workout = workoutsDB.get(position);
 
-        holder.setWorkoutName((String)workout.get("name"));
+        holder.setWorkoutName((String) workout.get("name"));
         holder.setWorkoutImage((int)workout.get("imagePath"));
-
-        // You can set click listners to indvidual items in the viewholder here
-        // make sure you pass down the listner or make the Data members of the viewHolder public
 
     }
 

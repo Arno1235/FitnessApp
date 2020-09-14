@@ -2,12 +2,14 @@ package com.ArnoVanEetvelde.fitnessapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RecyclerOnClickListener implements View.OnClickListener {
 
@@ -27,7 +29,7 @@ public class RecyclerOnClickListener implements View.OnClickListener {
     public void onClick(View view) {
         int itemPosition = mRecyclerView.getChildLayoutPosition(view);
         Intent intent = new Intent(mContext, StartWorkoutActivity.class);
-        intent.putExtra("workoutObject", workoutsDB.get(itemPosition));
+        intent.putExtra("workoutObject", (Parcelable) workoutsDB.get(itemPosition));
         intent.putExtra("userID", userID);
         mContext.startActivity(intent);
     }

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutHolder> {
 
@@ -54,7 +55,7 @@ public class WorkoutAdapter extends RecyclerView.Adapter<WorkoutAdapter.WorkoutH
     @Override
     public void onBindViewHolder(@NonNull WorkoutHolder holder, final int position) {
         if (position < workoutsDB.size()) {
-            final HashMap<String, Object> workout = workoutsDB.get(position);
+            final Map<String, Object> workout = workoutsDB.get(position);
 
             holder.setWorkoutName((String) workout.get("name"));
             if (workout.containsKey("imagePath")) {

@@ -39,6 +39,7 @@ import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class MainActivity extends AppCompatActivity {
@@ -258,13 +259,11 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                HashMap<String, Object> workoutObject = new HashMap<>();
-                                workoutObject.put("name", document.get("Name").toString());
-                                Context context = getApplicationContext();
-                                int id = getResources().getIdentifier(document.get("Picture").toString(), "drawable", context.getPackageName());
-                                workoutObject.put("imagePath", id);
+                                HashMap<String, Object> workoutObject = (HashMap<String, Object>) document.getData();
                                 workoutObject.put("ID", document.getId());
-
+                                Context context = getApplicationContext();
+                                int id = getResources().getIdentifier(document.get("picture").toString(), "drawable", context.getPackageName());
+                                workoutObject.put("imagePath", id);
                                 workoutsDB.add(workoutObject);
                             }
                         } else {

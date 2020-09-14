@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
@@ -365,10 +366,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                userDB = new HashMap<>();
-                                userDB.put("email", document.get("email"));
-                                userDB.put("username", document.get("username"));
-                                userDB.put("goal", document.get("goal"));
+                                userDB.clear();
+                                userDB = (HashMap<String, Object>) document.getData();
                                 userDB.put("ID", document.getId());
 
                                 progressDialog.hide();
